@@ -23,6 +23,7 @@ const Index = () => {
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   const [magicImages, setMagicImages] = useState<{closeup: string; sideProfile: string; editorial: string} | null>(null);
   const [isGeneratingMagic, setIsGeneratingMagic] = useState(false);
+  const [customInstructions, setCustomInstructions] = useState<string>("");
   const {
     toast
   } = useToast();
@@ -62,7 +63,12 @@ const Index = () => {
       console.log(`Sending ${imageDataArray.length} images for simulation`);
 
       // Call the edge function with multiple images
-      const promptWithHappyExpression = `${selectedProcedure.prompt}\nThe person should have a natural, genuine happy expression with a warm smile.`;
+      let finalPrompt = `${selectedProcedure.prompt}\nThe person should have a natural, genuine happy expression with a warm smile.`;
+      
+      // Append custom instructions if provided
+      if (customInstructions.trim()) {
+        finalPrompt += `\n\nAdditional instructions: ${customInstructions.trim()}`;
+      }
       
       const {
         data,
@@ -70,7 +76,7 @@ const Index = () => {
       } = await supabase.functions.invoke("generate-simulation", {
         body: {
           imageDataArray,
-          prompt: promptWithHappyExpression
+          prompt: finalPrompt
         }
       });
       if (error) {
@@ -128,6 +134,7 @@ const Index = () => {
     setBeforeImageUrl("");
     setAfterImageUrl("");
     setMagicImages(null);
+    setCustomInstructions("");
     setStep("info");
   };
 
@@ -330,13 +337,31 @@ const Index = () => {
               }} animate={{
                 opacity: 1,
                 y: 0
-              }} className="flex justify-center gap-4">
+              }} className="w-full max-w-2xl mx-auto space-y-4">
+                    <div className="glass-card rounded-3xl p-6">
+                      <label htmlFor="custom-instructions" className="block text-sm font-medium mb-2">
+                        Custom Instructions (Optional)
+                      </label>
+                      <textarea
+                        id="custom-instructions"
+                        value={customInstructions}
+                        onChange={(e) => setCustomInstructions(e.target.value)}
+                        placeholder="Add any specific instructions for the simulation (e.g., 'make the nose slightly more upturned', 'enhance cheekbones more prominently')..."
+                        className="w-full min-h-[100px] px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                      />
+                      <p className="text-xs text-muted-foreground mt-2">
+                        These instructions will be added to the AI prompt for more precise results.
+                      </p>
+                    </div>
+                    
+                    <div className="flex justify-center gap-4">
                       <Button size="lg" variant="secondary" onClick={() => setStep("info")} className="rounded-full px-8 bg-slate-900 hover:bg-slate-800 text-slate-50">
                         Back
                       </Button>
                       <Button size="lg" className="rounded-full px-8" onClick={handleGenerate}>
                         Generate Simulation
                       </Button>
+                    </div>
                   </motion.div>}
               </motion.div>}
 
