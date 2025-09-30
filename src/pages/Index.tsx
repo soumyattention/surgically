@@ -129,6 +129,7 @@ const Index = () => {
           { text: "Try Surgically Now", href: "#dashboard", primary: true },
           { text: "View Showcase", href: "#showcase" }
         ]}
+        bottomImage={undefined}
       />
       
       <div id="dashboard" className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
