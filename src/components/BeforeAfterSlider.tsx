@@ -10,7 +10,7 @@ interface BeforeAfterSliderProps {
   onUploadNew: () => void;
   onUseMagic: () => void;
   isGeneratingMagic: boolean;
-  magicImages: {closeup: string; sideProfile: string; happyExpression: string} | null;
+  magicImages: {closeup: string; sideProfile: string; editorial: string} | null;
 }
 
 export const BeforeAfterSlider = ({
@@ -140,11 +140,11 @@ export const BeforeAfterSlider = ({
             </div>
             <div className="glass-card rounded-2xl p-3">
               <img
-                src={magicImages.happyExpression}
-                alt="Happy expression"
+                src={magicImages.editorial}
+                alt="Editorial pose"
                 className="w-full aspect-square object-cover rounded-xl mb-2"
               />
-              <p className="text-center text-sm font-medium">Happy Expression</p>
+              <p className="text-center text-sm font-medium">Editorial Pose</p>
             </div>
           </div>
         </motion.div>

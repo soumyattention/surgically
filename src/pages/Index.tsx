@@ -21,7 +21,7 @@ const Index = () => {
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEditingInfo, setIsEditingInfo] = useState(false);
-  const [magicImages, setMagicImages] = useState<{closeup: string; sideProfile: string; happyExpression: string} | null>(null);
+  const [magicImages, setMagicImages] = useState<{closeup: string; sideProfile: string; editorial: string} | null>(null);
   const [isGeneratingMagic, setIsGeneratingMagic] = useState(false);
   const {
     toast
@@ -62,13 +62,15 @@ const Index = () => {
       console.log(`Sending ${imageDataArray.length} images for simulation`);
 
       // Call the edge function with multiple images
+      const promptWithHappyExpression = `${selectedProcedure.prompt}\nThe person should have a natural, genuine happy expression with a warm smile.`;
+      
       const {
         data,
         error
       } = await supabase.functions.invoke("generate-simulation", {
         body: {
           imageDataArray,
-          prompt: selectedProcedure.prompt
+          prompt: promptWithHappyExpression
         }
       });
       if (error) {
@@ -152,16 +154,16 @@ const Index = () => {
     try {
       const closeupPrompt = getCloseupPrompt(selectedProcedure);
       const sideProfilePrompt = "Transform this image to show a clear side profile view (90-degree angle) of the person's face, maintaining all the surgical results and features.";
-      const happyExpressionPrompt = "Keep the exact same image and surgical results, but change the facial expression to a natural, genuine happy smile.";
+      const editorialPosePrompt = "Create a professional editorial-style portrait photo of this person with the surgical results, using dramatic but natural lighting and a confident, magazine-quality pose.";
 
       console.log("Starting Magic generation with prompts:", {
         closeup: closeupPrompt,
         sideProfile: sideProfilePrompt,
-        happy: happyExpressionPrompt
+        editorial: editorialPosePrompt
       });
 
       // Call edge function 3 times in parallel
-      const [closeupResult, sideProfileResult, happyResult] = await Promise.all([
+      const [closeupResult, sideProfileResult, editorialResult] = await Promise.all([
         supabase.functions.invoke("generate-simulation", {
           body: {
             imageDataArray: [afterImageUrl],
@@ -177,7 +179,7 @@ const Index = () => {
         supabase.functions.invoke("generate-simulation", {
           body: {
             imageDataArray: [afterImageUrl],
-            prompt: happyExpressionPrompt
+            prompt: editorialPosePrompt
           }
         })
       ]);
@@ -185,7 +187,7 @@ const Index = () => {
       console.log("Magic API Results:", {
         closeup: { error: closeupResult.error, hasData: !!closeupResult.data?.imageUrl },
         sideProfile: { error: sideProfileResult.error, hasData: !!sideProfileResult.data?.imageUrl },
-        happy: { error: happyResult.error, hasData: !!happyResult.data?.imageUrl }
+        editorial: { error: editorialResult.error, hasData: !!editorialResult.data?.imageUrl }
       });
 
       // Check for errors and log them specifically
@@ -197,17 +199,17 @@ const Index = () => {
         console.error("Side profile generation error:", sideProfileResult.error);
         throw new Error(`Side profile failed: ${sideProfileResult.error.message}`);
       }
-      if (happyResult.error) {
-        console.error("Happy expression generation error:", happyResult.error);
-        throw new Error(`Happy expression failed: ${happyResult.error.message}`);
+      if (editorialResult.error) {
+        console.error("Editorial pose generation error:", editorialResult.error);
+        throw new Error(`Editorial pose failed: ${editorialResult.error.message}`);
       }
 
       // Validate data
-      if (!closeupResult.data?.imageUrl || !sideProfileResult.data?.imageUrl || !happyResult.data?.imageUrl) {
+      if (!closeupResult.data?.imageUrl || !sideProfileResult.data?.imageUrl || !editorialResult.data?.imageUrl) {
         console.error("Missing image URLs in response:", {
           closeup: closeupResult.data,
           sideProfile: sideProfileResult.data,
-          happy: happyResult.data
+          editorial: editorialResult.data
         });
         throw new Error("One or more images were not generated properly");
       }
@@ -215,7 +217,7 @@ const Index = () => {
       setMagicImages({
         closeup: closeupResult.data.imageUrl,
         sideProfile: sideProfileResult.data.imageUrl,
-        happyExpression: happyResult.data.imageUrl
+        editorial: editorialResult.data.imageUrl
       });
 
       toast({
