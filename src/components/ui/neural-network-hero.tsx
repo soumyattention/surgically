@@ -1,13 +1,8 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, extend } from '@react-three/fiber';
 import { shaderMaterial } from '@react-three/drei';
 import * as THREE from 'three';
-
-import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { SplitText } from 'gsap/SplitText';
-
-gsap.registerPlugin(SplitText, useGSAP);
 
 // ===================== SHADER =====================
 const vertexShader = `
@@ -174,7 +169,7 @@ function ShaderPlane() {
   return (
     <mesh ref={meshRef} position={[0, -0.75, -0.5]}>
       <planeGeometry args={[4, 4]} />
-      <cPPNShaderMaterial ref={materialRef} side={THREE.DoubleSide} />
+      <cPPNShaderMaterial key={(CPPNShaderMaterial as any).key} ref={materialRef} side={THREE.DoubleSide} />
     </mesh>
   );
 }
@@ -184,27 +179,25 @@ function ShaderBackground() {
   
   const camera = useMemo(() => ({ position: [0, 0, 1] as [number, number, number], fov: 75, near: 0.1, far: 1000 }), []);
   
-  useGSAP(
-    () => {
-      if (!canvasRef.current) return;
-      
-      gsap.set(canvasRef.current, {
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    
+    gsap.fromTo(canvasRef.current, 
+      {
         filter: 'blur(20px)',
         scale: 1.1,
-        autoAlpha: 0.7
-      });
-      
-      gsap.to(canvasRef.current, {
+        opacity: 0.7
+      },
+      {
         filter: 'blur(0px)',
         scale: 1,
-        autoAlpha: 1,
+        opacity: 1,
         duration: 1.5,
         ease: 'power3.out',
         delay: 0.3
-      });
-    },
-    { scope: canvasRef }
-  );
+      }
+    );
+  }, []);
   
   return (
     <div ref={canvasRef} className="bg-black absolute inset-0 -z-10 w-full h-full" aria-hidden>
@@ -252,72 +245,48 @@ export default function Hero({
   const microItem2Ref = useRef<HTMLLIElement | null>(null);
   const microItem3Ref = useRef<HTMLLIElement | null>(null);
 
-  useGSAP(
-    () => {
-      if (!headerRef.current) return;
+  useEffect(() => {
+    if (!headerRef.current) return;
 
-      document.fonts.ready.then(() => {
-        const split = new SplitText(headerRef.current!, {
-          type: 'lines',
-          wordsClass: 'lines',
-        });
+    const tl = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+    });
 
-        gsap.set(split.lines, {
-          filter: 'blur(16px)',
-          yPercent: 30,
-          autoAlpha: 0,
-          scale: 1.06,
-          transformOrigin: '50% 100%',
-        });
+    // Animate badge
+    if (badgeRef.current) {
+      tl.from(badgeRef.current, { opacity: 0, y: -8, duration: 0.5 }, 0);
+    }
 
-        if (badgeRef.current) {
-          gsap.set(badgeRef.current, { autoAlpha: 0, y: -8 });
-        }
-        if (paraRef.current) {
-          gsap.set(paraRef.current, { autoAlpha: 0, y: 8 });
-        }
-        if (ctaRef.current) {
-          gsap.set(ctaRef.current, { autoAlpha: 0, y: 8 });
-        }
-        const microItems = [microItem1Ref.current, microItem2Ref.current, microItem3Ref.current].filter(Boolean);
-        if (microItems.length > 0) {
-          gsap.set(microItems, { autoAlpha: 0, y: 6 });
-        }
+    // Animate title
+    if (headerRef.current) {
+      tl.from(headerRef.current, { 
+        opacity: 0, 
+        y: 30, 
+        filter: 'blur(10px)',
+        duration: 0.9 
+      }, 0.1);
+    }
 
-        const tl = gsap.timeline({
-          defaults: { ease: 'power3.out' },
-        });
+    // Animate description
+    if (paraRef.current) {
+      tl.from(paraRef.current, { opacity: 0, y: 8, duration: 0.5 }, '-=0.55');
+    }
 
-        if (badgeRef.current) {
-          tl.to(badgeRef.current, { autoAlpha: 1, y: 0, duration: 0.5 }, 0.0);
-        }
+    // Animate CTA buttons
+    if (ctaRef.current) {
+      tl.from(ctaRef.current, { opacity: 0, y: 8, duration: 0.5 }, '-=0.35');
+    }
 
-        tl.to(
-          split.lines,
-          {
-            filter: 'blur(0px)',
-            yPercent: 0,
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.9,
-            stagger: 0.15,
-          },
-          0.1,
-        );
+    // Animate micro details
+    const microItems = [microItem1Ref.current, microItem2Ref.current, microItem3Ref.current].filter(Boolean);
+    if (microItems.length > 0) {
+      tl.from(microItems, { opacity: 0, y: 6, duration: 0.5, stagger: 0.1 }, '-=0.25');
+    }
 
-        if (paraRef.current) {
-          tl.to(paraRef.current, { autoAlpha: 1, y: 0, duration: 0.5 }, '-=0.55');
-        }
-        if (ctaRef.current) {
-          tl.to(ctaRef.current, { autoAlpha: 1, y: 0, duration: 0.5 }, '-=0.35');
-        }
-        if (microItems.length > 0) {
-          tl.to(microItems, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }, '-=0.25');
-        }
-      });
-    },
-    { scope: sectionRef },
-  );
+    return () => {
+      tl.kill();
+    };
+  }, []);
 
   return (
     <section ref={sectionRef} className="relative h-screen w-screen overflow-hidden">

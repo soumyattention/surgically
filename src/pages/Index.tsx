@@ -117,39 +117,26 @@ const Index = () => {
   };
 
   return (
-    <>
-      <Hero 
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <Hero
         title="The future of surgical consultations is here."
         description="Show patients their surgical results before they leave your office. Made for plastic surgeons, dermatologists, and aesthetic clinics."
         badgeText="AI-Powered Simulations"
-        badgeLabel="Beta"
+        badgeLabel="New"
         ctaButtons={[
-          { text: "Try SurgAI Now", href: "#dashboard", primary: true },
+          { text: "Try SurgAI Now", href: "#try", primary: true },
           { text: "View Showcase", href: "#showcase" }
         ]}
-        microDetails={["Instant Results", "HIPAA Compliant", "Clinical Grade AI"]}
+        microDetails={["Instant results", "23+ procedures", "Medical-grade AI"]}
       />
-      
-      <div id="dashboard" className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
-        <div className="container mx-auto">
-          {/* Header */}
-          <motion.header
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
-          >
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              SurgAI
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              AI-powered surgical simulation for plastic surgeons and clinics.
-              Show patients realistic before/after results instantly.
-            </p>
-          </motion.header>
 
-        {/* Main Content */}
-        <div className="space-y-8">
+      {/* Main Content Section */}
+      <div id="try" className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+        <div className="container mx-auto">
+
+          {/* Main Content */}
+          <div className="space-y-8">
           <AnimatePresence mode="wait">
             {step === "upload" && (
               <PhotoUpload onPhotoSelected={handlePhotoSelected} />
@@ -218,29 +205,29 @@ const Index = () => {
               />
             )}
           </AnimatePresence>
-        </div>
+          </div>
 
-        {/* Footer */}
-        <motion.footer
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-16 text-sm text-muted-foreground"
-        >
-          <p>
-            SurgAI uses advanced AI to provide surgical simulations for
-            educational purposes.
-          </p>
-          <p className="mt-1">
-            Results are approximations and should not replace professional
-            medical consultation.
-          </p>
-        </motion.footer>
+          {/* Footer */}
+          <motion.footer
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-center mt-16 text-sm text-muted-foreground"
+          >
+            <p>
+              SurgAI uses advanced AI to provide surgical simulations for
+              educational purposes.
+            </p>
+            <p className="mt-1">
+              Results are approximations and should not replace professional
+              medical consultation.
+            </p>
+          </motion.footer>
         </div>
-
-        <AnimatePresence>{isGenerating && <LoadingState />}</AnimatePresence>
       </div>
-    </>
+
+      <AnimatePresence>{isGenerating && <LoadingState />}</AnimatePresence>
+    </div>
   );
 };
 
