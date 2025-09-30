@@ -94,7 +94,7 @@ export default function GalleryUpload({
               Choose File
             </Button>
 
-            <Button variant="secondary" onClick={() => cameraInputRef.current?.click()}>
+            <Button variant="secondary" onClick={() => cameraInputRef.current?.click()} className="bg-[c278c9] bg-[#d7a1dd]/[0.26]">
               <Camera className="h-4 w-4" />
               Take Photo
             </Button>
