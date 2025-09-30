@@ -133,45 +133,28 @@ const Index = () => {
 
   const getCloseupPrompt = (procedure: Procedure) => {
     const closeupPrompts: Record<string, string> = {
-      "rhinoplasty": "Create a before/after collage showing a detailed closeup of the nose and surrounding facial area, highlighting the refined nose structure and improved contours. Ratio 4:3.",
-      "lip-filler": "Create a before/after collage showing a detailed closeup of the lips and mouth area, highlighting the enhanced lip volume, definition, and natural shape. Ratio 4:3.",
-      "botox": "Create a before/after collage showing a detailed closeup of the forehead, between eyebrows, and eye area, highlighting the smoothed wrinkles and relaxed, youthful expression. Ratio 4:3.",
-      "hair-transplant": "Create a before/after collage showing a detailed closeup of the hairline and frontal scalp area, highlighting the dense hair coverage and strong, natural hairline. Ratio 4:3.",
-      "brow-lift": "Create a before/after collage showing a detailed closeup of the eyebrows and forehead area, highlighting the elevated brow position and smoothed forehead. Ratio 4:3.",
-      "face-contouring": "Create a before/after collage showing a detailed closeup of the jawline and lower face, highlighting the defined V-line contour and sculpted facial structure. Ratio 4:3.",
-      "chin-surgery": "Create a before/after collage showing a detailed closeup of the chin and lower facial profile, highlighting the enhanced chin projection and balanced facial harmony. Ratio 4:3.",
-      "mole-removal": "Create a before/after collage showing a detailed closeup of the treated area, highlighting the clear, smooth skin with minimal scarring. Ratio 4:3.",
-      "cleft-lip-repair": "Create a before/after collage showing a detailed closeup of the upper lip and nose base area, highlighting the repaired lip with natural symmetry and improved function. Ratio 4:3.",
-      "chemical-peel": "Create a before/after collage showing a detailed closeup of the facial skin texture, highlighting the improved skin tone, reduced fine lines, and smoother complexion. Ratio 4:3."
+      "rhinoplasty": "Create a detailed closeup shot of the nose and surrounding facial area, highlighting the refined nose structure and improved contours. Ratio 4:3.",
+      "lip-filler": "Create a detailed closeup shot of the lips and mouth area, highlighting the enhanced lip volume, definition, and natural shape. Ratio 4:3.",
+      "botox": "Create a detailed closeup shot of the forehead, between eyebrows, and eye area, highlighting the smoothed wrinkles and relaxed, youthful expression. Ratio 4:3.",
+      "hair-transplant": "Create a detailed closeup shot of the hairline and frontal scalp area, highlighting the dense hair coverage and strong, natural hairline. Ratio 4:3.",
+      "brow-lift": "Create a detailed closeup shot of the eyebrows and forehead area, highlighting the elevated brow position and smoothed forehead. Ratio 4:3.",
+      "face-contouring": "Create a detailed closeup shot of the jawline and lower face, highlighting the defined V-line contour and sculpted facial structure. Ratio 4:3.",
+      "chin-surgery": "Create a detailed closeup shot of the chin and lower facial profile, highlighting the enhanced chin projection and balanced facial harmony. Ratio 4:3.",
+      "mole-removal": "Create a detailed closeup shot of the treated area, highlighting the clear, smooth skin with minimal scarring. Ratio 4:3.",
+      "cleft-lip-repair": "Create a detailed closeup shot of the upper lip and nose base area, highlighting the repaired lip with natural symmetry and improved function. Ratio 4:3.",
+      "chemical-peel": "Create a detailed closeup shot of the facial skin texture, highlighting the improved skin tone, reduced fine lines, and smoother complexion. Ratio 4:3."
     };
-    return closeupPrompts[procedure.id] || "Create a before/after collage showing a detailed closeup of the surgical area with clear results. Ratio 4:3.";
+    return closeupPrompts[procedure.id] || "Create a detailed closeup shot of the surgical area with clear results. Ratio 4:3.";
   };
 
   const handleUseMagic = async () => {
-    if (!beforeImageUrl || !afterImageUrl || !selectedProcedure) return;
+    if (!afterImageUrl || !selectedProcedure) return;
     
     setIsGeneratingMagic(true);
     try {
       const closeupPrompt = getCloseupPrompt(selectedProcedure);
-      const sideProfilePrompt = "Create a before/after collage showing a clear side profile view (90-degree angle) of the person's face, highlighting the surgical transformation. Ratio 4:3.";
-      const bustShotPrompt = "Create a before/after collage showing a bust shot (head and shoulders) of the person, highlighting the overall facial transformation with professional lighting. Ratio 4:3.";
-
-      // Ensure the BEFORE image is a data URL (the AI gateway cannot read blob: URLs)
-      const fileToDataUrl = (file: File) => new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-
-      let beforeInput = beforeImageUrl;
-      if (beforeImageUrl.startsWith("blob:") && selectedFiles[0]) {
-        try {
-          beforeInput = await fileToDataUrl(selectedFiles[0]);
-        } catch (e) {
-          console.error("Failed converting before image to data URL", e);
-        }
-      }
+      const sideProfilePrompt = "Create a clear side profile view (90-degree angle) of the person's face, highlighting the surgical results with professional lighting. Ratio 4:3.";
+      const bustShotPrompt = "Create a bust shot (head and shoulders) of the person, showing the overall facial transformation with professional studio lighting. Ratio 4:3.";
 
       console.log("Starting Magic generation with prompts:", {
         closeup: closeupPrompt,
@@ -183,7 +166,7 @@ const Index = () => {
       const generateOnce = async (prompt: string): Promise<string> => {
         const { data, error } = await supabase.functions.invoke("generate-simulation", {
           body: {
-            imageDataArray: [beforeInput, afterImageUrl],
+            imageDataArray: [afterImageUrl],
             prompt,
           },
         });
@@ -225,7 +208,7 @@ const Index = () => {
       });
 
       if (c.status !== "fulfilled" || s.status !== "fulfilled" || b.status !== "fulfilled") {
-        throw new Error("One or more collage generations failed");
+        throw new Error("One or more magic image generations failed");
       }
 
       setMagicImages({
