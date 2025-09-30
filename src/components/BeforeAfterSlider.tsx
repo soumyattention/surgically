@@ -8,6 +8,9 @@ interface BeforeAfterSliderProps {
   afterImage: string;
   onTryAnother: () => void;
   onUploadNew: () => void;
+  onUseMagic: () => void;
+  isGeneratingMagic: boolean;
+  magicImages: {closeup: string; sideProfile: string; happyExpression: string} | null;
 }
 
 export const BeforeAfterSlider = ({
@@ -15,6 +18,9 @@ export const BeforeAfterSlider = ({
   afterImage,
   onTryAnother,
   onUploadNew,
+  onUseMagic,
+  isGeneratingMagic,
+  magicImages,
 }: BeforeAfterSliderProps) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
@@ -107,7 +113,54 @@ export const BeforeAfterSlider = ({
         </div>
       </div>
 
-      <div className="flex gap-4 justify-center flex-wrap">
+      {/* Magic Images Section */}
+      {magicImages && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 space-y-4"
+        >
+          <h3 className="text-xl font-semibold text-center">Magic Views</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="glass-card rounded-2xl p-3">
+              <img
+                src={magicImages.closeup}
+                alt="Closeup view"
+                className="w-full aspect-square object-cover rounded-xl mb-2"
+              />
+              <p className="text-center text-sm font-medium">Closeup</p>
+            </div>
+            <div className="glass-card rounded-2xl p-3">
+              <img
+                src={magicImages.sideProfile}
+                alt="Side profile view"
+                className="w-full aspect-square object-cover rounded-xl mb-2"
+              />
+              <p className="text-center text-sm font-medium">Side Profile</p>
+            </div>
+            <div className="glass-card rounded-2xl p-3">
+              <img
+                src={magicImages.happyExpression}
+                alt="Happy expression"
+                className="w-full aspect-square object-cover rounded-xl mb-2"
+              />
+              <p className="text-center text-sm font-medium">Happy Expression</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      <div className="flex gap-4 justify-center flex-wrap mt-6">
+        {!magicImages && (
+          <Button
+            size="lg"
+            className="rounded-full px-8 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            onClick={onUseMagic}
+            disabled={isGeneratingMagic}
+          >
+            {isGeneratingMagic ? "Generating Magic..." : "✨ Use Magic"}
+          </Button>
+        )}
         <Button
           size="lg"
           variant="secondary"

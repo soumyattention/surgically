@@ -21,6 +21,8 @@ const Index = () => {
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEditingInfo, setIsEditingInfo] = useState(false);
+  const [magicImages, setMagicImages] = useState<{closeup: string; sideProfile: string; happyExpression: string} | null>(null);
+  const [isGeneratingMagic, setIsGeneratingMagic] = useState(false);
   const {
     toast
   } = useToast();
@@ -123,7 +125,81 @@ const Index = () => {
     setPatientName("");
     setBeforeImageUrl("");
     setAfterImageUrl("");
+    setMagicImages(null);
     setStep("info");
+  };
+
+  const getCloseupPrompt = (procedure: Procedure) => {
+    const closeupPrompts: Record<string, string> = {
+      "rhinoplasty": "Create a detailed closeup shot focusing on the nose and surrounding area. Show the refined nose structure clearly with good lighting.",
+      "lip-filler": "Create a detailed closeup shot focusing on the lips and mouth area. Show the enhanced lip volume and definition clearly.",
+      "botox": "Create a detailed closeup shot focusing on the forehead, between eyebrows, and eye area. Show the smoothed wrinkles and relaxed expression clearly.",
+      "hair-transplant": "Create a detailed closeup shot focusing on the hairline and frontal scalp area. Show the dense, full hair coverage and strong hairline clearly.",
+      "brow-lift": "Create a detailed closeup shot focusing on the eyebrows and forehead area. Show the elevated brow position and smoothed forehead clearly.",
+      "face-contouring": "Create a detailed closeup shot focusing on the jawline and lower face. Show the defined V-line contour and sculpted appearance clearly.",
+      "chin-surgery": "Create a detailed closeup shot focusing on the chin and lower facial profile. Show the enhanced chin projection and balanced profile clearly.",
+      "mole-removal": "Create a detailed closeup shot focusing on the area where the mole was removed. Show the clear, smooth skin with minimal scarring clearly.",
+      "cleft-lip-repair": "Create a detailed closeup shot focusing on the upper lip and nose base area. Show the repaired lip with natural symmetry clearly.",
+      "chemical-peel": "Create a detailed closeup shot focusing on the facial skin texture. Show the improved skin tone, reduced fine lines, and smoother complexion clearly."
+    };
+    return closeupPrompts[procedure.id] || "Create a detailed closeup shot of the surgical area showing the results clearly.";
+  };
+
+  const handleUseMagic = async () => {
+    if (!afterImageUrl || !selectedProcedure) return;
+    
+    setIsGeneratingMagic(true);
+    try {
+      const closeupPrompt = getCloseupPrompt(selectedProcedure);
+      const sideProfilePrompt = "Transform this image to show a clear side profile view (90-degree angle) of the person's face, maintaining all the surgical results and features.";
+      const happyExpressionPrompt = "Keep the exact same image and surgical results, but change the facial expression to a natural, genuine happy smile.";
+
+      // Call edge function 3 times in parallel
+      const [closeupResult, sideProfileResult, happyResult] = await Promise.all([
+        supabase.functions.invoke("generate-simulation", {
+          body: {
+            imageDataArray: [afterImageUrl],
+            prompt: closeupPrompt
+          }
+        }),
+        supabase.functions.invoke("generate-simulation", {
+          body: {
+            imageDataArray: [afterImageUrl],
+            prompt: sideProfilePrompt
+          }
+        }),
+        supabase.functions.invoke("generate-simulation", {
+          body: {
+            imageDataArray: [afterImageUrl],
+            prompt: happyExpressionPrompt
+          }
+        })
+      ]);
+
+      if (closeupResult.error || sideProfileResult.error || happyResult.error) {
+        throw new Error("Failed to generate magic images");
+      }
+
+      setMagicImages({
+        closeup: closeupResult.data.imageUrl,
+        sideProfile: sideProfileResult.data.imageUrl,
+        happyExpression: happyResult.data.imageUrl
+      });
+
+      toast({
+        title: "Magic complete!",
+        description: "3 additional views have been generated."
+      });
+    } catch (error) {
+      console.error("Error generating magic images:", error);
+      toast({
+        title: "Magic failed",
+        description: "Unable to generate additional views. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingMagic(false);
+    }
   };
   return <div className="min-h-screen">
       <HeroSection title="The last thing patients see before saying yes." subtitle={{
@@ -259,7 +335,15 @@ const Index = () => {
                 </div>
               </motion.div>}
 
-            {step === "results" && <BeforeAfterSlider beforeImage={beforeImageUrl} afterImage={afterImageUrl} onTryAnother={handleTryAnother} onUploadNew={handleUploadNew} />}
+            {step === "results" && <BeforeAfterSlider 
+              beforeImage={beforeImageUrl} 
+              afterImage={afterImageUrl} 
+              onTryAnother={handleTryAnother} 
+              onUploadNew={handleUploadNew}
+              onUseMagic={handleUseMagic}
+              isGeneratingMagic={isGeneratingMagic}
+              magicImages={magicImages}
+            />}
           </AnimatePresence>
         </div>
 
