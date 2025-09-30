@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PhotoUpload } from "@/components/PhotoUpload";
+import GalleryUpload from "@/components/GalleryUpload";
 import { ProcedureGrid } from "@/components/ProcedureGrid";
 import { LoadingState } from "@/components/LoadingState";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Procedure } from "@/lib/constants";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroSection } from "@/components/ui/hero-section-dark";
-import GalleryUpload from "@/components/GalleryUpload";
 
 type Step = "upload" | "select" | "results";
 
@@ -155,7 +154,20 @@ const Index = () => {
         <div className="space-y-8">
           <AnimatePresence mode="wait">
             {step === "upload" && (
-              <PhotoUpload onPhotoSelected={handlePhotoSelected} />
+              <motion.div
+                key="upload"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="w-full max-w-2xl mx-auto"
+              >
+                <GalleryUpload 
+                  onPhotoSelected={handlePhotoSelected}
+                  maxFiles={1}
+                  multiple={false}
+                />
+              </motion.div>
             )}
 
             {step === "select" && (
@@ -222,16 +234,6 @@ const Index = () => {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Gallery Upload Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-16"
-        >
-          <GalleryUpload />
-        </motion.div>
 
         {/* Footer */}
         <motion.footer

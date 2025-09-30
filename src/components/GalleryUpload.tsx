@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   formatBytes,
   useFileUpload,
@@ -7,7 +7,7 @@ import {
 } from '@/hooks/use-file-upload';
 import { Alert, AlertContent, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { ImageIcon, TriangleAlert, Upload, XIcon, ZoomInIcon } from 'lucide-react';
+import { ImageIcon, TriangleAlert, Upload, XIcon, ZoomInIcon, Camera } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 
@@ -18,35 +18,23 @@ interface GalleryUploadProps {
   multiple?: boolean;
   className?: string;
   onFilesChange?: (files: FileWithPreview[]) => void;
+  onPhotoSelected?: (file: File) => void;
 }
 
 export default function GalleryUpload({
   maxFiles = 10,
-  maxSize = 5 * 1024 * 1024, // 5MB
-  accept = 'image/*',
-  multiple = true,
+  maxSize = 10 * 1024 * 1024, // 10MB
+  accept = 'image/jpeg,image/png',
+  multiple = false,
   className,
   onFilesChange,
+  onPhotoSelected,
 }: GalleryUploadProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  // Create default images using FileMetadata type
-  const defaultImages: FileMetadata[] = [
-    {
-      id: 'default-1',
-      name: 'avatar-1.png',
-      size: 44608,
-      type: 'image/png',
-      url: toAbsoluteUrl('/media/avatars/1.png'),
-    },
-    {
-      id: 'default-2',
-      name: 'avatar-2.png',
-      size: 42144,
-      type: 'image/png',
-      url: toAbsoluteUrl('/media/avatars/2.png'),
-    },
-  ];
+  // No default images for the photo upload use case
+  const defaultImages: FileMetadata[] = [];
 
   const [
     { files, isDragging, errors },
@@ -69,9 +57,26 @@ export default function GalleryUpload({
     onFilesChange,
   });
 
+  // Call onPhotoSelected when a file is added (for single file mode)
+  useEffect(() => {
+    if (!multiple && files.length > 0 && onPhotoSelected) {
+      const latestFile = files[files.length - 1].file;
+      if (latestFile instanceof File) {
+        onPhotoSelected(latestFile);
+      }
+    }
+  }, [files, multiple, onPhotoSelected]);
+
   const isImage = (file: File | FileMetadata) => {
     const type = file instanceof File ? file.type : file.type;
     return type.startsWith('image/');
+  };
+
+  const handleCameraCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && onPhotoSelected) {
+      onPhotoSelected(file);
+    }
   };
 
   return (
@@ -100,17 +105,36 @@ export default function GalleryUpload({
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Upload images to gallery</h3>
-            <p className="text-sm text-muted-foreground">Drag and drop images here or click to browse</p>
+            <h3 className="text-lg font-semibold">Upload Patient Photo</h3>
+            <p className="text-sm text-muted-foreground">Drag and drop or click to select a patient photo</p>
             <p className="text-xs text-muted-foreground">
-              PNG, JPG, GIF up to {formatBytes(maxSize)} each (max {maxFiles} files)
+              Supported formats: JPG, PNG (max {formatBytes(maxSize)})
             </p>
           </div>
 
-          <Button onClick={openFileDialog}>
-            <Upload className="h-4 w-4" />
-            Select images
-          </Button>
+          <div className="flex gap-4 flex-wrap justify-center">
+            <Button onClick={openFileDialog}>
+              <Upload className="h-4 w-4" />
+              Choose File
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => cameraInputRef.current?.click()}
+            >
+              <Camera className="h-4 w-4" />
+              Take Photo
+            </Button>
+          </div>
+
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={handleCameraCapture}
+          />
         </div>
       </div>
 
