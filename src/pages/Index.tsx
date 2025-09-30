@@ -14,7 +14,7 @@ type Step = "info" | "upload" | "results";
 const Index = () => {
   const [step, setStep] = useState<Step>("info");
   const [patientName, setPatientName] = useState<string>("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(null);
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
@@ -30,30 +30,39 @@ const Index = () => {
     setSelectedProcedure(patientInfo.procedure);
     setStep("upload");
   };
-  const handlePhotoSelected = (file: File) => {
-    setSelectedFile(file);
-    setBeforeImageUrl(URL.createObjectURL(file));
+  const handleFilesChange = (filesWithPreview: any[]) => {
+    const files = filesWithPreview.map(f => f.file).filter(f => f instanceof File);
+    setSelectedFiles(files);
+    // Set the first image as the before image for display
+    if (files.length > 0) {
+      setBeforeImageUrl(URL.createObjectURL(files[0]));
+    }
   };
   const handleGenerate = async () => {
-    if (!selectedFile || !selectedProcedure) return;
+    if (selectedFiles.length === 0 || !selectedProcedure) return;
     setIsGenerating(true);
     try {
-      // Convert file to base64
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      await new Promise((resolve, reject) => {
-        reader.onload = resolve;
-        reader.onerror = reject;
-      });
-      const base64Image = reader.result as string;
+      // Convert all files to base64
+      const imageDataArray = await Promise.all(
+        selectedFiles.map(file => {
+          return new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        })
+      );
 
-      // Call the edge function
+      console.log(`Sending ${imageDataArray.length} images for simulation`);
+
+      // Call the edge function with multiple images
       const {
         data,
         error
       } = await supabase.functions.invoke("generate-simulation", {
         body: {
-          imageData: base64Image,
+          imageDataArray,
           prompt: selectedProcedure.prompt
         }
       });
@@ -100,13 +109,13 @@ const Index = () => {
     }
   };
   const handleTryAnother = () => {
-    setSelectedFile(null);
+    setSelectedFiles([]);
     setBeforeImageUrl("");
     setAfterImageUrl("");
     setStep("upload");
   };
   const handleUploadNew = () => {
-    setSelectedFile(null);
+    setSelectedFiles([]);
     setSelectedProcedure(null);
     setPatientName("");
     setBeforeImageUrl("");
@@ -192,10 +201,10 @@ const Index = () => {
                 </div>
 
                 <div className="w-full max-w-2xl mx-auto">
-                  <GalleryUpload onPhotoSelected={handlePhotoSelected} maxFiles={1} multiple={false} />
+                  <GalleryUpload onFilesChange={handleFilesChange} maxFiles={4} multiple={true} />
                 </div>
 
-                {selectedFile && beforeImageUrl && <motion.div initial={{
+                {selectedFiles.length > 0 && beforeImageUrl && <motion.div initial={{
                 opacity: 0,
                 y: 20
               }} animate={{

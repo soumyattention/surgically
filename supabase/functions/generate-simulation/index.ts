@@ -13,11 +13,11 @@ serve(async (req) => {
   }
 
   try {
-    const { imageData, prompt } = await req.json();
+    const { imageDataArray, prompt } = await req.json();
 
-    if (!imageData || !prompt) {
+    if (!imageDataArray || !Array.isArray(imageDataArray) || imageDataArray.length === 0 || !prompt) {
       return new Response(
-        JSON.stringify({ error: "Missing imageData or prompt" }),
+        JSON.stringify({ error: "Missing imageDataArray or prompt" }),
         {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -37,7 +37,23 @@ serve(async (req) => {
       );
     }
 
-    // Call Lovable AI Gateway with Gemini image editing
+    // Build content array with text prompt and multiple images
+    const contentArray = [
+      {
+        type: "text",
+        text: prompt,
+      },
+      ...imageDataArray.map((imageData: string) => ({
+        type: "image_url",
+        image_url: {
+          url: imageData,
+        },
+      })),
+    ];
+
+    console.log(`Processing ${imageDataArray.length} images for surgical simulation`);
+
+    // Call Lovable AI Gateway with Gemini image editing (supports multiple images)
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -51,18 +67,7 @@ serve(async (req) => {
           messages: [
             {
               role: "user",
-              content: [
-                {
-                  type: "text",
-                  text: prompt,
-                },
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: imageData,
-                  },
-                },
-              ],
+              content: contentArray,
             },
           ],
           modalities: ["image", "text"],

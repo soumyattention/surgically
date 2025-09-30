@@ -81,10 +81,12 @@ export default function GalleryUpload({
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Upload Patient Photo</h3>
-            <p className="text-sm text-muted-foreground">Drag and drop or click to select a patient photo</p>
+            <h3 className="text-lg font-semibold">Upload Patient Photos</h3>
+            <p className="text-sm text-muted-foreground">
+              {multiple ? `Upload ${maxFiles} patient photos from different angles` : 'Drag and drop or click to select a patient photo'}
+            </p>
             <p className="text-xs text-muted-foreground">
-              Supported formats: JPG, PNG (max {formatBytes(maxSize)})
+              Supported formats: JPG, PNG (max {formatBytes(maxSize)} per file)
             </p>
           </div>
 
