@@ -153,8 +153,25 @@ const Index = () => {
     setIsGeneratingMagic(true);
     try {
       const closeupPrompt = getCloseupPrompt(selectedProcedure);
-      const sideProfilePrompt = "Create a before/after collage showing a clear side profile view (90-degree angle) of the person's face, highlighting the surgical transformation.";
-      const bustShotPrompt = "Create a before/after collage showing a bust shot (head and shoulders) of the person, highlighting the overall facial transformation with professional lighting.";
+      const sideProfilePrompt = "Create a before/after collage showing a clear side profile view (90-degree angle) of the person's face, highlighting the surgical transformation. Ratio 4:3.";
+      const bustShotPrompt = "Create a before/after collage showing a bust shot (head and shoulders) of the person, highlighting the overall facial transformation with professional lighting. Ratio 4:3.";
+
+      // Ensure the BEFORE image is a data URL (the AI gateway cannot read blob: URLs)
+      const fileToDataUrl = (file: File) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      let beforeInput = beforeImageUrl;
+      if (beforeImageUrl.startsWith("blob:") && selectedFiles[0]) {
+        try {
+          beforeInput = await fileToDataUrl(selectedFiles[0]);
+        } catch (e) {
+          console.error("Failed converting before image to data URL", e);
+        }
+      }
 
       console.log("Starting Magic generation with prompts:", {
         closeup: closeupPrompt,
@@ -166,19 +183,19 @@ const Index = () => {
       const [closeupResult, sideProfileResult, bustShotResult] = await Promise.all([
         supabase.functions.invoke("generate-simulation", {
           body: {
-            imageDataArray: [beforeImageUrl, afterImageUrl],
+            imageDataArray: [beforeInput, afterImageUrl],
             prompt: closeupPrompt
           }
         }),
         supabase.functions.invoke("generate-simulation", {
           body: {
-            imageDataArray: [beforeImageUrl, afterImageUrl],
+            imageDataArray: [beforeInput, afterImageUrl],
             prompt: sideProfilePrompt
           }
         }),
         supabase.functions.invoke("generate-simulation", {
           body: {
-            imageDataArray: [beforeImageUrl, afterImageUrl],
+            imageDataArray: [beforeInput, afterImageUrl],
             prompt: bustShotPrompt
           }
         })
