@@ -8,48 +8,48 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Apple-inspired color system */
-    --background: 220 40% 98%;
-    --foreground: 220 20% 20%;
+    /* Purple-themed color system matching hero */
+    --background: 270 30% 97%;
+    --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 20%;
+    --card-foreground: 0 0% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 20%;
+    --popover-foreground: 0 0% 20%;
 
-    /* Apple Blue primary */
-    --primary: 211 100% 50%;
+    /* Purple-to-pink gradient primary */
+    --primary: 280 70% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 211 100% 60%;
+    --primary-glow: 320 70% 60%;
 
-    --secondary: 220 15% 95%;
-    --secondary-foreground: 220 20% 20%;
+    --secondary: 270 20% 95%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 220 15% 95%;
-    --muted-foreground: 220 10% 50%;
+    --muted: 270 15% 93%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 211 100% 50%;
+    --accent: 280 70% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 90%;
-    --input: 220 20% 90%;
-    --ring: 211 100% 50%;
+    --border: 270 15% 88%;
+    --input: 270 15% 88%;
+    --ring: 280 70% 60%;
 
     --radius: 1rem;
 
     /* Glassmorphism effects */
     --glass-bg: 0 0% 100% / 0.7;
-    --glass-border: 220 20% 90% / 0.5;
+    --glass-border: 270 15% 88% / 0.5;
     
-    /* Shadows */
-    --shadow-sm: 0 2px 8px hsl(220 20% 20% / 0.05);
-    --shadow-md: 0 8px 24px hsl(220 20% 20% / 0.08);
-    --shadow-lg: 0 16px 48px hsl(220 20% 20% / 0.12);
-    --shadow-glow: 0 8px 32px hsl(211 100% 50% / 0.2);
+    /* Shadows with purple tint */
+    --shadow-sm: 0 2px 8px hsl(270 20% 20% / 0.05);
+    --shadow-md: 0 8px 24px hsl(270 20% 20% / 0.08);
+    --shadow-lg: 0 16px 48px hsl(270 20% 20% / 0.12);
+    --shadow-glow: 0 8px 32px hsl(280 70% 60% / 0.2);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -57,42 +57,42 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 220 25% 10%;
-    --foreground: 220 20% 95%;
+    --background: 270 20% 10%;
+    --foreground: 270 10% 95%;
 
-    --card: 220 25% 12%;
-    --card-foreground: 220 20% 95%;
+    --card: 270 20% 12%;
+    --card-foreground: 270 10% 95%;
 
-    --popover: 220 25% 12%;
-    --popover-foreground: 220 20% 95%;
+    --popover: 270 20% 12%;
+    --popover-foreground: 270 10% 95%;
 
-    --primary: 211 100% 50%;
+    --primary: 280 70% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 211 100% 60%;
+    --primary-glow: 320 70% 60%;
 
-    --secondary: 220 20% 18%;
-    --secondary-foreground: 220 20% 95%;
+    --secondary: 270 20% 18%;
+    --secondary-foreground: 270 10% 95%;
 
-    --muted: 220 20% 18%;
-    --muted-foreground: 220 15% 65%;
+    --muted: 270 20% 18%;
+    --muted-foreground: 270 10% 65%;
 
-    --accent: 211 100% 50%;
+    --accent: 280 70% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
-    --ring: 211 100% 50%;
+    --border: 270 15% 20%;
+    --input: 270 15% 20%;
+    --ring: 280 70% 60%;
 
-    --glass-bg: 220 25% 12% / 0.7;
-    --glass-border: 220 20% 30% / 0.5;
+    --glass-bg: 270 20% 12% / 0.7;
+    --glass-border: 270 15% 30% / 0.5;
     
-    --shadow-sm: 0 2px 8px hsl(220 20% 5% / 0.3);
-    --shadow-md: 0 8px 24px hsl(220 20% 5% / 0.4);
-    --shadow-lg: 0 16px 48px hsl(220 20% 5% / 0.5);
-    --shadow-glow: 0 8px 32px hsl(211 100% 50% / 0.3);
+    --shadow-sm: 0 2px 8px hsl(270 20% 5% / 0.3);
+    --shadow-md: 0 8px 24px hsl(270 20% 5% / 0.4);
+    --shadow-lg: 0 16px 48px hsl(270 20% 5% / 0.5);
+    --shadow-glow: 0 8px 32px hsl(280 70% 60% / 0.3);
   }
 }
 

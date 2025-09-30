@@ -135,7 +135,7 @@ const Index = () => {
       
       <HowItWorks />
       
-      <div id="dashboard" className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+      <div id="dashboard" className="bg-background py-12 px-4">
         <div className="container mx-auto">
         {/* Header */}
         <motion.header
@@ -144,7 +144,7 @@ const Index = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 text-foreground">
             Surgically AI
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

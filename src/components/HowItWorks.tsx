@@ -4,11 +4,11 @@ export function HowItWorks() {
   return (
     <div className="flex justify-center items-center flex-col px-4 py-20 bg-background">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-foreground">
           How Surgically AI Works
         </h2>
         
-        <div className="space-y-8 text-lg md:text-xl text-muted-foreground">
+        <div className="space-y-8 text-lg md:text-xl text-foreground/70">
           <p className="text-left">
             Surgically uses{" "}
             <LinkPreview
@@ -44,7 +44,7 @@ export function HowItWorks() {
 
           <p className="text-left">
             Perfect for plastic surgeons, dermatologists, and aesthetic clinics looking to{" "}
-            <span className="font-bold text-primary">increase consultation conversions</span> and build patient confidence.
+            <span className="font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">increase consultation conversions</span> and build patient confidence.
           </p>
         </div>
       </div>
