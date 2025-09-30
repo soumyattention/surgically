@@ -18,7 +18,7 @@ export const ProcedureGrid = ({
       className="w-full max-w-6xl mx-auto"
     >
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-semibold mb-2">Select Procedure</h2>
+        <h2 className="text-2xl font-semibold mb-2 bg-gradient-to-r from-purple-600 to-pink-500 dark:from-purple-300 dark:to-orange-200 bg-clip-text text-transparent">Select Procedure</h2>
         <p className="text-muted-foreground">
           Choose the surgical procedure to simulate
         </p>
