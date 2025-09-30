@@ -79,7 +79,7 @@ export const BeforeAfterSlider = ({
             <img
               src={afterImage}
               alt="After surgery"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
             <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-semibold">
               After
@@ -94,7 +94,7 @@ export const BeforeAfterSlider = ({
             <img
               src={beforeImage}
               alt="Before surgery"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
             <div className="absolute top-4 left-4 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold">
               Before
