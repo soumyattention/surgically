@@ -119,12 +119,12 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <HeroSection
-        title="The future of surgical consultations is here."
+        title="The last thing patients see before saying yes."
         subtitle={{
-          regular: "Show patients their surgical results before they leave your office. Made for plastic surgeons, ",
-          gradient: "dermatologists, and aesthetic clinics.",
+          regular: "The future of surgical consultations is here.",
+          gradient: "",
         }}
-        description=""
+        description="Show patients their surgical results before they leave your office. Made for plastic surgeons, dermatologists, and aesthetic clinics."
         ctaButtons={[
           { text: "Try Surgically Now", href: "#dashboard", primary: true },
           { text: "View Showcase", href: "#showcase" }
