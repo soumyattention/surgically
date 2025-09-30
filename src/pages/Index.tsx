@@ -179,62 +179,59 @@ const Index = () => {
         bustShot: bustShotPrompt
       });
 
-      // Call edge function 3 times in parallel with both before and after images
-      const [closeupResult, sideProfileResult, bustShotResult] = await Promise.all([
-        supabase.functions.invoke("generate-simulation", {
+      // Helper to invoke edge function once
+      const generateOnce = async (prompt: string): Promise<string> => {
+        const { data, error } = await supabase.functions.invoke("generate-simulation", {
           body: {
             imageDataArray: [beforeInput, afterImageUrl],
-            prompt: closeupPrompt
-          }
-        }),
-        supabase.functions.invoke("generate-simulation", {
-          body: {
-            imageDataArray: [beforeInput, afterImageUrl],
-            prompt: sideProfilePrompt
-          }
-        }),
-        supabase.functions.invoke("generate-simulation", {
-          body: {
-            imageDataArray: [beforeInput, afterImageUrl],
-            prompt: bustShotPrompt
-          }
-        })
+            prompt,
+          },
+        });
+        if (error) throw new Error(error.message || "Generation error");
+        if (!data?.imageUrl) throw new Error("No image generated");
+        return data.imageUrl as string;
+      };
+
+      // Run all three in parallel
+      let [c, s, b] = await Promise.allSettled([
+        generateOnce(closeupPrompt),
+        generateOnce(sideProfilePrompt),
+        generateOnce(bustShotPrompt),
       ]);
 
-      console.log("Magic API Results:", {
-        closeup: { error: closeupResult.error, hasData: !!closeupResult.data?.imageUrl },
-        sideProfile: { error: sideProfileResult.error, hasData: !!sideProfileResult.data?.imageUrl },
-        bustShot: { error: bustShotResult.error, hasData: !!bustShotResult.data?.imageUrl }
+      // Retry failed ones once
+      const retryIfNeeded = async (
+        res: PromiseSettledResult<string>,
+        prompt: string
+      ): Promise<PromiseSettledResult<string>> => {
+        if (res.status === "fulfilled") return res;
+        try {
+          const url = await generateOnce(prompt);
+          return { status: "fulfilled", value: url } as PromiseFulfilledResult<string>;
+        } catch (e) {
+          console.error("Retry failed for prompt:", prompt, e);
+          return res;
+        }
+      };
+
+      c = await retryIfNeeded(c, closeupPrompt);
+      s = await retryIfNeeded(s, sideProfilePrompt);
+      b = await retryIfNeeded(b, bustShotPrompt);
+
+      console.log("Magic API Results after retry:", {
+        closeup: c.status === "fulfilled",
+        sideProfile: s.status === "fulfilled",
+        bustShot: b.status === "fulfilled",
       });
 
-      // Check for errors and log them specifically
-      if (closeupResult.error) {
-        console.error("Closeup collage generation error:", closeupResult.error);
-        throw new Error(`Closeup collage failed: ${closeupResult.error.message}`);
-      }
-      if (sideProfileResult.error) {
-        console.error("Side profile collage generation error:", sideProfileResult.error);
-        throw new Error(`Side profile collage failed: ${sideProfileResult.error.message}`);
-      }
-      if (bustShotResult.error) {
-        console.error("Bust shot collage generation error:", bustShotResult.error);
-        throw new Error(`Bust shot collage failed: ${bustShotResult.error.message}`);
-      }
-
-      // Validate data
-      if (!closeupResult.data?.imageUrl || !sideProfileResult.data?.imageUrl || !bustShotResult.data?.imageUrl) {
-        console.error("Missing image URLs in response:", {
-          closeup: closeupResult.data,
-          sideProfile: sideProfileResult.data,
-          bustShot: bustShotResult.data
-        });
-        throw new Error("One or more collage images were not generated properly");
+      if (c.status !== "fulfilled" || s.status !== "fulfilled" || b.status !== "fulfilled") {
+        throw new Error("One or more collage generations failed");
       }
 
       setMagicImages({
-        closeup: closeupResult.data.imageUrl,
-        sideProfile: sideProfileResult.data.imageUrl,
-        editorial: bustShotResult.data.imageUrl
+        closeup: c.value,
+        sideProfile: s.value,
+        editorial: b.value,
       });
 
       toast({
