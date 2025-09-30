@@ -122,7 +122,8 @@ const Index = () => {
         title="The last thing patients see before saying yes."
         subtitle={{
           regular: "The future of ",
-          gradient: "surgical consultations is here.",
+          gradient: "surgical consultation",
+          after: " is here.",
         }}
         description="Show patients their surgical results before they leave your office. Made for plastic surgeons, dermatologists, and aesthetic clinics."
         ctaButtons={[
