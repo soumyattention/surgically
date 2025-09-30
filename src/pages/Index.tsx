@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Procedure } from "@/lib/constants";
 import { supabase } from "@/integrations/supabase/client";
+import { HeroSection } from "@/components/ui/hero-section-dark";
 
 type Step = "upload" | "select" | "results";
 
@@ -116,8 +117,20 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
-      <div className="container mx-auto">
+    <div className="min-h-screen">
+      <HeroSection
+        title="AI-Powered Surgical Visualization"
+        subtitle={{
+          regular: "Transform patient consultations with ",
+          gradient: "instant surgical simulations",
+        }}
+        description="Show patients realistic before/after results instantly. Advanced AI technology helps plastic surgeons and clinics visualize surgical outcomes with unprecedented accuracy."
+        ctaText="Try SurgAI Now"
+        ctaHref="#dashboard"
+      />
+      
+      <div id="dashboard" className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+        <div className="container mx-auto">
         {/* Header */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
@@ -222,6 +235,7 @@ const Index = () => {
             medical consultation.
           </p>
         </motion.footer>
+        </div>
       </div>
 
       <AnimatePresence>{isGenerating && <LoadingState />}</AnimatePresence>
