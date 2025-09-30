@@ -117,19 +117,18 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen dark">
+    <div className="min-h-screen">
       <HeroSection
-        title="The last thing patients see before saying yes."
+        title="The future of surgical consultations is here."
         subtitle={{
-          regular: "The future of surgical consultations is here.",
-          gradient: "",
+          regular: "Show patients their surgical results before they leave your office. Made for plastic surgeons, ",
+          gradient: "dermatologists, and aesthetic clinics.",
         }}
-        description="Show patients their surgical results before they leave your office. Made for plastic surgeons, dermatologists, and aesthetic clinics."
+        description=""
         ctaButtons={[
           { text: "Try Surgically Now", href: "#dashboard", primary: true },
           { text: "View Showcase", href: "#showcase" }
         ]}
-        bottomImage={undefined}
       />
       
       <div id="dashboard" className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
