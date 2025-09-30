@@ -142,7 +142,7 @@ const Index = () => {
           className="text-center mb-12"
         >
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            Surgically
+            Surgically AI
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             AI-powered surgical simulation for plastic surgeons and clinics.
