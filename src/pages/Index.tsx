@@ -14,7 +14,6 @@ type Step = "info" | "upload" | "results";
 const Index = () => {
   const [step, setStep] = useState<Step>("info");
   const [patientName, setPatientName] = useState<string>("");
-  const [patientAge, setPatientAge] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(null);
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
@@ -25,11 +24,9 @@ const Index = () => {
   } = useToast();
   const handlePatientInfoSubmit = (patientInfo: {
     name: string;
-    age: string;
     procedure: Procedure;
   }) => {
     setPatientName(patientInfo.name);
-    setPatientAge(patientInfo.age);
     setSelectedProcedure(patientInfo.procedure);
     setStep("upload");
   };
@@ -112,7 +109,6 @@ const Index = () => {
     setSelectedFile(null);
     setSelectedProcedure(null);
     setPatientName("");
-    setPatientAge("");
     setBeforeImageUrl("");
     setAfterImageUrl("");
     setStep("info");
@@ -186,7 +182,7 @@ const Index = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Patient</p>
-                      <p className="font-semibold">{patientName}, {patientAge} years old</p>
+                      <p className="font-semibold">{patientName}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Procedure</p>

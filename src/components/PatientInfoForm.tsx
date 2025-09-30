@@ -9,26 +9,24 @@ import { PROCEDURES, Procedure } from "@/lib/constants";
 interface PatientInfoFormProps {
   onProceed: (patientInfo: {
     name: string;
-    age: string;
     procedure: Procedure;
   }) => void;
 }
 
 export const PatientInfoForm = ({ onProceed }: PatientInfoFormProps) => {
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
   const [selectedProcedureId, setSelectedProcedureId] = useState<string>("");
 
   const handleProceed = () => {
-    if (name && age && selectedProcedureId) {
+    if (name && selectedProcedureId) {
       const procedure = PROCEDURES.find(p => p.id === selectedProcedureId);
       if (procedure) {
-        onProceed({ name, age, procedure });
+        onProceed({ name, procedure });
       }
     }
   };
 
-  const isValid = name.trim() !== "" && age.trim() !== "" && selectedProcedureId !== "";
+  const isValid = name.trim() !== "" && selectedProcedureId !== "";
 
   return (
     <motion.div
@@ -54,18 +52,6 @@ export const PatientInfoForm = ({ onProceed }: PatientInfoFormProps) => {
               placeholder="Enter patient name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-background/50"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="patient-age">Patient Age</Label>
-            <Input
-              id="patient-age"
-              type="number"
-              placeholder="Enter patient age"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
               className="bg-background/50"
             />
           </div>
