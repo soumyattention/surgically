@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Procedure } from "@/lib/constants";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroSection } from "@/components/ui/hero-section-dark";
+import { HowItWorks } from "@/components/HowItWorks";
 
 type Step = "upload" | "select" | "results";
 
@@ -131,6 +132,8 @@ const Index = () => {
           { text: "View Showcase", href: "#showcase" }
         ]}
       />
+      
+      <HowItWorks />
       
       <div id="dashboard" className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
         <div className="container mx-auto">
