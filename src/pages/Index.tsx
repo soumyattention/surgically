@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GalleryUpload from "@/components/GalleryUpload";
-import { ProcedureGrid } from "@/components/ProcedureGrid";
 import { LoadingState } from "@/components/LoadingState";
+import { PatientInfoForm } from "@/components/PatientInfoForm";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -11,10 +11,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { HeroSection } from "@/components/ui/hero-section-dark";
 import { HowItWorks } from "@/components/HowItWorks";
 
-type Step = "upload" | "select" | "results";
+type Step = "info" | "upload" | "results";
 
 const Index = () => {
-  const [step, setStep] = useState<Step>("upload");
+  const [step, setStep] = useState<Step>("info");
+  const [patientName, setPatientName] = useState<string>("");
+  const [patientAge, setPatientAge] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(
     null
@@ -24,14 +26,20 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
+  const handlePatientInfoSubmit = (patientInfo: {
+    name: string;
+    age: string;
+    procedure: Procedure;
+  }) => {
+    setPatientName(patientInfo.name);
+    setPatientAge(patientInfo.age);
+    setSelectedProcedure(patientInfo.procedure);
+    setStep("upload");
+  };
+
   const handlePhotoSelected = (file: File) => {
     setSelectedFile(file);
     setBeforeImageUrl(URL.createObjectURL(file));
-    setStep("select");
-  };
-
-  const handleProcedureSelect = (procedure: Procedure) => {
-    setSelectedProcedure(procedure);
   };
 
   const handleGenerate = async () => {
@@ -105,16 +113,20 @@ const Index = () => {
   };
 
   const handleTryAnother = () => {
-    setSelectedProcedure(null);
-    setStep("select");
+    setSelectedFile(null);
+    setBeforeImageUrl("");
+    setAfterImageUrl("");
+    setStep("upload");
   };
 
   const handleUploadNew = () => {
     setSelectedFile(null);
     setSelectedProcedure(null);
+    setPatientName("");
+    setPatientAge("");
     setBeforeImageUrl("");
     setAfterImageUrl("");
-    setStep("upload");
+    setStep("info");
   };
 
   return (
@@ -156,6 +168,18 @@ const Index = () => {
         {/* Main Content */}
         <div className="space-y-8">
           <AnimatePresence mode="wait">
+            {step === "info" && (
+              <motion.div
+                key="info"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <PatientInfoForm onProceed={handlePatientInfoSubmit} />
+              </motion.div>
+            )}
+
             {step === "upload" && (
               <motion.div
                 key="upload"
@@ -163,65 +187,64 @@ const Index = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="w-full max-w-2xl mx-auto"
-              >
-                <GalleryUpload 
-                  onPhotoSelected={handlePhotoSelected}
-                  maxFiles={1}
-                  multiple={false}
-                />
-              </motion.div>
-            )}
-
-            {step === "select" && (
-              <motion.div
-                key="select"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
                 className="space-y-8"
               >
-                {/* Preview */}
-                {beforeImageUrl && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="glass-card rounded-3xl p-4 max-w-md mx-auto"
-                  >
-                    <img
-                      src={beforeImageUrl}
-                      alt="Selected photo"
-                      className="w-full rounded-2xl"
-                    />
-                  </motion.div>
-                )}
+                <div className="glass-card rounded-3xl p-6 max-w-2xl mx-auto space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Patient</p>
+                      <p className="font-semibold">{patientName}, {patientAge} years old</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Procedure</p>
+                      <p className="font-semibold">{selectedProcedure?.icon} {selectedProcedure?.name}</p>
+                    </div>
+                  </div>
+                </div>
 
-                <ProcedureGrid
-                  selectedProcedure={selectedProcedure}
-                  onProcedureSelect={handleProcedureSelect}
-                />
+                <div className="w-full max-w-2xl mx-auto">
+                  <GalleryUpload 
+                    onPhotoSelected={handlePhotoSelected}
+                    maxFiles={1}
+                    multiple={false}
+                  />
+                </div>
 
-                {selectedProcedure && (
+                {selectedFile && beforeImageUrl && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex justify-center gap-4"
+                    className="space-y-6"
                   >
-                    <Button
-                      size="lg"
-                      variant="secondary"
-                      className="rounded-full px-8"
-                      onClick={() => setStep("upload")}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="glass-card rounded-3xl p-4 max-w-md mx-auto"
                     >
-                      Back
-                    </Button>
-                    <Button
-                      size="lg"
-                      className="rounded-full px-8 animate-glow"
-                      onClick={handleGenerate}
-                    >
-                      Generate Simulation
-                    </Button>
+                      <img
+                        src={beforeImageUrl}
+                        alt="Selected photo"
+                        className="w-full rounded-2xl"
+                      />
+                    </motion.div>
+
+                    <div className="flex justify-center gap-4">
+                      <Button
+                        size="lg"
+                        variant="secondary"
+                        className="rounded-full px-8"
+                        onClick={() => setStep("info")}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        size="lg"
+                        className="rounded-full px-8"
+                        onClick={handleGenerate}
+                      >
+                        Generate Simulation
+                      </Button>
+                    </div>
                   </motion.div>
                 )}
               </motion.div>

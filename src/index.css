@@ -18,10 +18,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 20%;
 
-    /* Purple-to-pink gradient primary */
-    --primary: 280 70% 60%;
+    /* Purple primary color #c278c9 */
+    --primary: 297 45% 63%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 320 70% 60%;
+    --primary-glow: 297 55% 68%;
 
     --secondary: 270 20% 95%;
     --secondary-foreground: 0 0% 20%;
@@ -66,9 +66,9 @@ All colors MUST be HSL.
     --popover: 270 20% 12%;
     --popover-foreground: 270 10% 95%;
 
-    --primary: 280 70% 60%;
+    --primary: 297 45% 63%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 320 70% 60%;
+    --primary-glow: 297 55% 68%;
 
     --secondary: 270 20% 18%;
     --secondary-foreground: 270 10% 95%;
