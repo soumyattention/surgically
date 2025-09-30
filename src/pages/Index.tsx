@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Procedure } from "@/lib/constants";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroSection } from "@/components/ui/hero-section-dark";
+import GalleryUpload from "@/components/GalleryUpload";
 
 type Step = "upload" | "select" | "results";
 
@@ -221,6 +222,16 @@ const Index = () => {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Gallery Upload Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-16"
+        >
+          <GalleryUpload />
+        </motion.div>
 
         {/* Footer */}
         <motion.footer

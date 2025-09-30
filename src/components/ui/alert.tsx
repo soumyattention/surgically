@@ -11,9 +11,14 @@ const alertVariants = cva(
         default: "bg-background text-foreground",
         destructive: "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
       },
+      appearance: {
+        default: "",
+        light: "bg-destructive/10",
+      },
     },
     defaultVariants: {
       variant: "default",
+      appearance: "default",
     },
   },
 );
@@ -21,10 +26,24 @@ const alertVariants = cva(
 const Alert = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
->(({ className, variant, ...props }, ref) => (
-  <div ref={ref} role="alert" className={cn(alertVariants({ variant }), className)} {...props} />
+>(({ className, variant, appearance, ...props }, ref) => (
+  <div ref={ref} role="alert" className={cn(alertVariants({ variant, appearance }), className)} {...props} />
 ));
 Alert.displayName = "Alert";
+
+const AlertIcon = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("", className)} {...props} />
+  )
+);
+AlertIcon.displayName = "AlertIcon";
+
+const AlertContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("", className)} {...props} />
+  )
+);
+AlertContent.displayName = "AlertContent";
 
 const AlertTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
@@ -40,4 +59,4 @@ const AlertDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttrib
 );
 AlertDescription.displayName = "AlertDescription";
 
-export { Alert, AlertTitle, AlertDescription };
+export { Alert, AlertTitle, AlertDescription, AlertIcon, AlertContent };
