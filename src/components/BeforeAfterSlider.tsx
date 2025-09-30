@@ -125,26 +125,26 @@ export const BeforeAfterSlider = ({
             <div className="glass-card rounded-2xl p-3">
               <img
                 src={magicImages.closeup}
-                alt="Closeup view"
-                className="w-full aspect-square object-cover rounded-xl mb-2"
+                alt="Before/After closeup collage"
+                className="w-full aspect-[4/3] object-contain rounded-xl mb-2"
               />
-              <p className="text-center text-sm font-medium">Closeup</p>
+              <p className="text-center text-sm font-medium">Closeup Collage</p>
             </div>
             <div className="glass-card rounded-2xl p-3">
               <img
                 src={magicImages.sideProfile}
-                alt="Side profile view"
-                className="w-full aspect-square object-cover rounded-xl mb-2"
+                alt="Before/After side profile collage"
+                className="w-full aspect-[4/3] object-contain rounded-xl mb-2"
               />
-              <p className="text-center text-sm font-medium">Side Profile</p>
+              <p className="text-center text-sm font-medium">Side Profile Collage</p>
             </div>
             <div className="glass-card rounded-2xl p-3">
               <img
                 src={magicImages.editorial}
-                alt="Editorial pose"
-                className="w-full aspect-square object-cover rounded-xl mb-2"
+                alt="Before/After bust shot collage"
+                className="w-full aspect-[4/3] object-contain rounded-xl mb-2"
               />
-              <p className="text-center text-sm font-medium">Editorial Pose</p>
+              <p className="text-center text-sm font-medium">Bust Shot Collage</p>
             </div>
           </div>
         </motion.div>

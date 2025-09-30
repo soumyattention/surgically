@@ -133,53 +133,53 @@ const Index = () => {
 
   const getCloseupPrompt = (procedure: Procedure) => {
     const closeupPrompts: Record<string, string> = {
-      "rhinoplasty": "Create a detailed closeup shot focusing on the nose and surrounding area. Show the refined nose structure clearly with good lighting.",
-      "lip-filler": "Create a detailed closeup shot focusing on the lips and mouth area. Show the enhanced lip volume and definition clearly.",
-      "botox": "Create a detailed closeup shot focusing on the forehead, between eyebrows, and eye area. Show the smoothed wrinkles and relaxed expression clearly.",
-      "hair-transplant": "Create a detailed closeup shot focusing on the hairline and frontal scalp area. Show the dense, full hair coverage and strong hairline clearly.",
-      "brow-lift": "Create a detailed closeup shot focusing on the eyebrows and forehead area. Show the elevated brow position and smoothed forehead clearly.",
-      "face-contouring": "Create a detailed closeup shot focusing on the jawline and lower face. Show the defined V-line contour and sculpted appearance clearly.",
-      "chin-surgery": "Create a detailed closeup shot focusing on the chin and lower facial profile. Show the enhanced chin projection and balanced profile clearly.",
-      "mole-removal": "Create a detailed closeup shot focusing on the area where the mole was removed. Show the clear, smooth skin with minimal scarring clearly.",
-      "cleft-lip-repair": "Create a detailed closeup shot focusing on the upper lip and nose base area. Show the repaired lip with natural symmetry clearly.",
-      "chemical-peel": "Create a detailed closeup shot focusing on the facial skin texture. Show the improved skin tone, reduced fine lines, and smoother complexion clearly."
+      "rhinoplasty": "Create a before/after collage showing a detailed closeup of the nose and surrounding facial area, highlighting the refined nose structure and improved contours. Ratio 4:3.",
+      "lip-filler": "Create a before/after collage showing a detailed closeup of the lips and mouth area, highlighting the enhanced lip volume, definition, and natural shape. Ratio 4:3.",
+      "botox": "Create a before/after collage showing a detailed closeup of the forehead, between eyebrows, and eye area, highlighting the smoothed wrinkles and relaxed, youthful expression. Ratio 4:3.",
+      "hair-transplant": "Create a before/after collage showing a detailed closeup of the hairline and frontal scalp area, highlighting the dense hair coverage and strong, natural hairline. Ratio 4:3.",
+      "brow-lift": "Create a before/after collage showing a detailed closeup of the eyebrows and forehead area, highlighting the elevated brow position and smoothed forehead. Ratio 4:3.",
+      "face-contouring": "Create a before/after collage showing a detailed closeup of the jawline and lower face, highlighting the defined V-line contour and sculpted facial structure. Ratio 4:3.",
+      "chin-surgery": "Create a before/after collage showing a detailed closeup of the chin and lower facial profile, highlighting the enhanced chin projection and balanced facial harmony. Ratio 4:3.",
+      "mole-removal": "Create a before/after collage showing a detailed closeup of the treated area, highlighting the clear, smooth skin with minimal scarring. Ratio 4:3.",
+      "cleft-lip-repair": "Create a before/after collage showing a detailed closeup of the upper lip and nose base area, highlighting the repaired lip with natural symmetry and improved function. Ratio 4:3.",
+      "chemical-peel": "Create a before/after collage showing a detailed closeup of the facial skin texture, highlighting the improved skin tone, reduced fine lines, and smoother complexion. Ratio 4:3."
     };
-    return closeupPrompts[procedure.id] || "Create a detailed closeup shot of the surgical area showing the results clearly.";
+    return closeupPrompts[procedure.id] || "Create a before/after collage showing a detailed closeup of the surgical area with clear results. Ratio 4:3.";
   };
 
   const handleUseMagic = async () => {
-    if (!afterImageUrl || !selectedProcedure) return;
+    if (!beforeImageUrl || !afterImageUrl || !selectedProcedure) return;
     
     setIsGeneratingMagic(true);
     try {
       const closeupPrompt = getCloseupPrompt(selectedProcedure);
-      const sideProfilePrompt = "Transform this image to show a clear side profile view (90-degree angle) of the person's face, maintaining all the surgical results and features.";
-      const editorialPosePrompt = "Create a professional editorial-style portrait photo of this person with the surgical results, using dramatic but natural lighting and a confident, magazine-quality pose.";
+      const sideProfilePrompt = "Create a before/after collage showing a clear side profile view (90-degree angle) of the person's face, highlighting the surgical transformation.";
+      const bustShotPrompt = "Create a before/after collage showing a bust shot (head and shoulders) of the person, highlighting the overall facial transformation with professional lighting.";
 
       console.log("Starting Magic generation with prompts:", {
         closeup: closeupPrompt,
         sideProfile: sideProfilePrompt,
-        editorial: editorialPosePrompt
+        bustShot: bustShotPrompt
       });
 
-      // Call edge function 3 times in parallel
-      const [closeupResult, sideProfileResult, editorialResult] = await Promise.all([
+      // Call edge function 3 times in parallel with both before and after images
+      const [closeupResult, sideProfileResult, bustShotResult] = await Promise.all([
         supabase.functions.invoke("generate-simulation", {
           body: {
-            imageDataArray: [afterImageUrl],
+            imageDataArray: [beforeImageUrl, afterImageUrl],
             prompt: closeupPrompt
           }
         }),
         supabase.functions.invoke("generate-simulation", {
           body: {
-            imageDataArray: [afterImageUrl],
+            imageDataArray: [beforeImageUrl, afterImageUrl],
             prompt: sideProfilePrompt
           }
         }),
         supabase.functions.invoke("generate-simulation", {
           body: {
-            imageDataArray: [afterImageUrl],
-            prompt: editorialPosePrompt
+            imageDataArray: [beforeImageUrl, afterImageUrl],
+            prompt: bustShotPrompt
           }
         })
       ]);
@@ -187,37 +187,37 @@ const Index = () => {
       console.log("Magic API Results:", {
         closeup: { error: closeupResult.error, hasData: !!closeupResult.data?.imageUrl },
         sideProfile: { error: sideProfileResult.error, hasData: !!sideProfileResult.data?.imageUrl },
-        editorial: { error: editorialResult.error, hasData: !!editorialResult.data?.imageUrl }
+        bustShot: { error: bustShotResult.error, hasData: !!bustShotResult.data?.imageUrl }
       });
 
       // Check for errors and log them specifically
       if (closeupResult.error) {
-        console.error("Closeup generation error:", closeupResult.error);
-        throw new Error(`Closeup failed: ${closeupResult.error.message}`);
+        console.error("Closeup collage generation error:", closeupResult.error);
+        throw new Error(`Closeup collage failed: ${closeupResult.error.message}`);
       }
       if (sideProfileResult.error) {
-        console.error("Side profile generation error:", sideProfileResult.error);
-        throw new Error(`Side profile failed: ${sideProfileResult.error.message}`);
+        console.error("Side profile collage generation error:", sideProfileResult.error);
+        throw new Error(`Side profile collage failed: ${sideProfileResult.error.message}`);
       }
-      if (editorialResult.error) {
-        console.error("Editorial pose generation error:", editorialResult.error);
-        throw new Error(`Editorial pose failed: ${editorialResult.error.message}`);
+      if (bustShotResult.error) {
+        console.error("Bust shot collage generation error:", bustShotResult.error);
+        throw new Error(`Bust shot collage failed: ${bustShotResult.error.message}`);
       }
 
       // Validate data
-      if (!closeupResult.data?.imageUrl || !sideProfileResult.data?.imageUrl || !editorialResult.data?.imageUrl) {
+      if (!closeupResult.data?.imageUrl || !sideProfileResult.data?.imageUrl || !bustShotResult.data?.imageUrl) {
         console.error("Missing image URLs in response:", {
           closeup: closeupResult.data,
           sideProfile: sideProfileResult.data,
-          editorial: editorialResult.data
+          bustShot: bustShotResult.data
         });
-        throw new Error("One or more images were not generated properly");
+        throw new Error("One or more collage images were not generated properly");
       }
 
       setMagicImages({
         closeup: closeupResult.data.imageUrl,
         sideProfile: sideProfileResult.data.imageUrl,
-        editorial: editorialResult.data.imageUrl
+        editorial: bustShotResult.data.imageUrl
       });
 
       toast({
