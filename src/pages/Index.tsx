@@ -63,7 +63,7 @@ const Index = () => {
       console.log(`Sending ${imageDataArray.length} images for simulation`);
 
       // Call the edge function with multiple images
-      let finalPrompt = `${selectedProcedure.prompt}\nThe person should have a natural happy expression, while position of his/her facial characteristics remain constant.`;
+      let finalPrompt = `${selectedProcedure.prompt}\nThe person should have a natural subtle happy expression.`;
       
       // Append custom instructions if provided
       if (customInstructions.trim()) {
