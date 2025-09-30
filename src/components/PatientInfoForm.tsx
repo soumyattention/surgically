@@ -32,140 +32,72 @@ export const PatientInfoForm = ({ onProceed }: PatientInfoFormProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full max-w-5xl mx-auto px-4"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full max-w-2xl mx-auto"
     >
-      <div className="relative">
-        {/* Main Content */}
-        <div className="text-center mb-12">
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-          >
-            Let's Begin Your
-            <span className="block mt-2 bg-gradient-to-r from-primary via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Transformation Journey
-            </span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-xl text-muted-foreground max-w-2xl mx-auto"
-          >
-            Enter a few details to visualize your personalized results
-          </motion.p>
+      <div className="glass-card rounded-3xl p-8 space-y-6">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Patient Information
+          </h2>
+          <p className="text-muted-foreground">
+            Enter patient details to begin the simulation
+          </p>
         </div>
 
-        {/* Interactive Cards */}
-        <div className="grid gap-6 md:gap-8 mb-10">
-          {/* Patient Name */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="group"
-          >
-            <div className="glass-card rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02]">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-2xl">
-                  👤
-                </div>
-                <Label htmlFor="patient-name" className="text-2xl md:text-3xl font-semibold m-0">
-                  Patient Name
-                </Label>
-              </div>
-              <Input
-                id="patient-name"
-                placeholder="Enter full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-background/50 border-2 h-14 text-lg rounded-xl transition-all duration-300 focus:border-primary focus:scale-[1.01]"
-              />
-            </div>
-          </motion.div>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="patient-name">Patient Name</Label>
+            <Input
+              id="patient-name"
+              placeholder="Enter patient name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-background/50"
+            />
+          </div>
 
-          {/* Patient Age */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="group"
-          >
-            <div className="glass-card rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02]">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-2xl">
-                  🎂
-                </div>
-                <Label htmlFor="patient-age" className="text-2xl md:text-3xl font-semibold m-0">
-                  Age
-                </Label>
-              </div>
-              <Input
-                id="patient-age"
-                type="number"
-                placeholder="Enter age"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                className="bg-background/50 border-2 h-14 text-lg rounded-xl transition-all duration-300 focus:border-primary focus:scale-[1.01]"
-              />
-            </div>
-          </motion.div>
+          <div className="space-y-2">
+            <Label htmlFor="patient-age">Patient Age</Label>
+            <Input
+              id="patient-age"
+              type="number"
+              placeholder="Enter patient age"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              className="bg-background/50"
+            />
+          </div>
 
-          {/* Procedure Selection */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
-            className="group"
-          >
-            <div className="glass-card rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02]">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-2xl">
-                  ⚕️
-                </div>
-                <Label htmlFor="procedure" className="text-2xl md:text-3xl font-semibold m-0">
-                  Choose Your Procedure
-                </Label>
-              </div>
-              <Select value={selectedProcedureId} onValueChange={setSelectedProcedureId}>
-                <SelectTrigger id="procedure" className="bg-background/50 border-2 h-14 text-lg rounded-xl transition-all duration-300 focus:border-primary focus:scale-[1.01]">
-                  <SelectValue placeholder="Select a procedure..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px] rounded-xl">
-                  {PROCEDURES.map((procedure) => (
-                    <SelectItem key={procedure.id} value={procedure.id} className="text-base py-3">
-                      <span className="flex items-center gap-3">
-                        <span className="text-xl">{procedure.icon}</span>
-                        <span>{procedure.name}</span>
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </motion.div>
+          <div className="space-y-2">
+            <Label htmlFor="procedure">Surgical Procedure</Label>
+            <Select value={selectedProcedureId} onValueChange={setSelectedProcedureId}>
+              <SelectTrigger id="procedure" className="bg-background/50">
+                <SelectValue placeholder="Select a procedure" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[300px]">
+                {PROCEDURES.map((procedure) => (
+                  <SelectItem key={procedure.id} value={procedure.id}>
+                    <span className="flex items-center gap-2">
+                      <span>{procedure.icon}</span>
+                      <span>{procedure.name}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* CTA Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+        <Button
+          onClick={handleProceed}
+          disabled={!isValid}
+          size="lg"
+          className="w-full rounded-full"
         >
-          <Button
-            onClick={handleProceed}
-            disabled={!isValid}
-            size="lg"
-            className="w-full h-16 rounded-2xl text-xl font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 disabled:scale-100 disabled:hover:shadow-none"
-          >
-            Continue to Photo Upload →
-          </Button>
-        </motion.div>
+          Proceed to Upload Photos
+        </Button>
       </div>
     </motion.div>
   );
