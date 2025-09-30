@@ -214,21 +214,8 @@ const Index = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    className="flex justify-center gap-4"
                   >
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="glass-card rounded-3xl p-4 max-w-md mx-auto"
-                    >
-                      <img
-                        src={beforeImageUrl}
-                        alt="Selected photo"
-                        className="w-full rounded-2xl"
-                      />
-                    </motion.div>
-
-                    <div className="flex justify-center gap-4">
                       <Button
                         size="lg"
                         variant="secondary"
@@ -244,7 +231,6 @@ const Index = () => {
                       >
                         Generate Simulation
                       </Button>
-                    </div>
                   </motion.div>
                 )}
               </motion.div>
