@@ -119,14 +119,16 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <HeroSection
-        title="AI-Powered Surgical Visualization"
+        title="The future of surgical consultations is here."
         subtitle={{
-          regular: "Transform patient consultations with ",
-          gradient: "instant surgical simulations",
+          regular: "Show patients their surgical results before they leave your office. Made for plastic surgeons, ",
+          gradient: "dermatologists, and aesthetic clinics.",
         }}
-        description="Show patients realistic before/after results instantly. Advanced AI technology helps plastic surgeons and clinics visualize surgical outcomes with unprecedented accuracy."
-        ctaText="Try SurgAI Now"
-        ctaHref="#dashboard"
+        description=""
+        ctaButtons={[
+          { text: "Try Surgically Now", href: "#dashboard", primary: true },
+          { text: "View Showcase", href: "#showcase" }
+        ]}
       />
       
       <div id="dashboard" className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
@@ -139,7 +141,7 @@ const Index = () => {
           className="text-center mb-12"
         >
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            SurgAI
+            Surgically
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             AI-powered surgical simulation for plastic surgeons and clinics.
@@ -227,7 +229,7 @@ const Index = () => {
           className="text-center mt-16 text-sm text-muted-foreground"
         >
           <p>
-            SurgAI uses advanced AI to provide surgical simulations for
+            Surgically uses advanced AI to provide surgical simulations for
             educational purposes.
           </p>
           <p className="mt-1">
