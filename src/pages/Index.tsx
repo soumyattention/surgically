@@ -154,6 +154,12 @@ const Index = () => {
       const sideProfilePrompt = "Transform this image to show a clear side profile view (90-degree angle) of the person's face, maintaining all the surgical results and features.";
       const happyExpressionPrompt = "Keep the exact same image and surgical results, but change the facial expression to a natural, genuine happy smile.";
 
+      console.log("Starting Magic generation with prompts:", {
+        closeup: closeupPrompt,
+        sideProfile: sideProfilePrompt,
+        happy: happyExpressionPrompt
+      });
+
       // Call edge function 3 times in parallel
       const [closeupResult, sideProfileResult, happyResult] = await Promise.all([
         supabase.functions.invoke("generate-simulation", {
@@ -176,8 +182,34 @@ const Index = () => {
         })
       ]);
 
-      if (closeupResult.error || sideProfileResult.error || happyResult.error) {
-        throw new Error("Failed to generate magic images");
+      console.log("Magic API Results:", {
+        closeup: { error: closeupResult.error, hasData: !!closeupResult.data?.imageUrl },
+        sideProfile: { error: sideProfileResult.error, hasData: !!sideProfileResult.data?.imageUrl },
+        happy: { error: happyResult.error, hasData: !!happyResult.data?.imageUrl }
+      });
+
+      // Check for errors and log them specifically
+      if (closeupResult.error) {
+        console.error("Closeup generation error:", closeupResult.error);
+        throw new Error(`Closeup failed: ${closeupResult.error.message}`);
+      }
+      if (sideProfileResult.error) {
+        console.error("Side profile generation error:", sideProfileResult.error);
+        throw new Error(`Side profile failed: ${sideProfileResult.error.message}`);
+      }
+      if (happyResult.error) {
+        console.error("Happy expression generation error:", happyResult.error);
+        throw new Error(`Happy expression failed: ${happyResult.error.message}`);
+      }
+
+      // Validate data
+      if (!closeupResult.data?.imageUrl || !sideProfileResult.data?.imageUrl || !happyResult.data?.imageUrl) {
+        console.error("Missing image URLs in response:", {
+          closeup: closeupResult.data,
+          sideProfile: sideProfileResult.data,
+          happy: happyResult.data
+        });
+        throw new Error("One or more images were not generated properly");
       }
 
       setMagicImages({

@@ -15,7 +15,20 @@ serve(async (req) => {
   try {
     const { imageDataArray, prompt } = await req.json();
 
+    console.log("Received request:", {
+      imageCount: imageDataArray?.length,
+      promptPreview: prompt?.substring(0, 100) + "...",
+      hasImages: !!imageDataArray,
+      hasPrompt: !!prompt
+    });
+
     if (!imageDataArray || !Array.isArray(imageDataArray) || imageDataArray.length === 0 || !prompt) {
+      console.error("Invalid request parameters:", {
+        hasImageDataArray: !!imageDataArray,
+        isArray: Array.isArray(imageDataArray),
+        imageCount: imageDataArray?.length,
+        hasPrompt: !!prompt
+      });
       return new Response(
         JSON.stringify({ error: "Missing imageDataArray or prompt" }),
         {
@@ -113,11 +126,17 @@ serve(async (req) => {
     }
 
     const data = await response.json();
+    console.log("AI Gateway response received:", {
+      hasChoices: !!data.choices,
+      hasImages: !!data.choices?.[0]?.message?.images,
+      imageCount: data.choices?.[0]?.message?.images?.length
+    });
+
     const generatedImageUrl =
       data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!generatedImageUrl) {
-      console.error("No image URL in response:", data);
+      console.error("No image URL in response. Full data:", JSON.stringify(data, null, 2));
       return new Response(
         JSON.stringify({ error: "No image generated" }),
         {
@@ -127,6 +146,7 @@ serve(async (req) => {
       );
     }
 
+    console.log("Successfully generated image, returning response");
     return new Response(
       JSON.stringify({ imageUrl: generatedImageUrl }),
       {
