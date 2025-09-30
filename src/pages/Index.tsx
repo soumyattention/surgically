@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Procedure } from "@/lib/constants";
 import { supabase } from "@/integrations/supabase/client";
+import Hero from "@/components/ui/neural-network-hero";
 
 type Step = "upload" | "select" | "results";
 
@@ -116,23 +117,36 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
-      <div className="container mx-auto">
-        {/* Header */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            SurgAI
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            AI-powered surgical simulation for plastic surgeons and clinics.
-            Show patients realistic before/after results instantly.
-          </p>
-        </motion.header>
+    <>
+      <Hero 
+        title="The future of surgical consultations is here."
+        description="Show patients their surgical results before they leave your office. Made for plastic surgeons, dermatologists, and aesthetic clinics."
+        badgeText="AI-Powered Simulations"
+        badgeLabel="Beta"
+        ctaButtons={[
+          { text: "Try SurgAI Now", href: "#dashboard", primary: true },
+          { text: "View Showcase", href: "#showcase" }
+        ]}
+        microDetails={["Instant Results", "HIPAA Compliant", "Clinical Grade AI"]}
+      />
+      
+      <div id="dashboard" className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+        <div className="container mx-auto">
+          {/* Header */}
+          <motion.header
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+              SurgAI
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              AI-powered surgical simulation for plastic surgeons and clinics.
+              Show patients realistic before/after results instantly.
+            </p>
+          </motion.header>
 
         {/* Main Content */}
         <div className="space-y-8">
@@ -222,10 +236,11 @@ const Index = () => {
             medical consultation.
           </p>
         </motion.footer>
-      </div>
+        </div>
 
-      <AnimatePresence>{isGenerating && <LoadingState />}</AnimatePresence>
-    </div>
+        <AnimatePresence>{isGenerating && <LoadingState />}</AnimatePresence>
+      </div>
+    </>
   );
 };
 
