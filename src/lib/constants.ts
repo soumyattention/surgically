@@ -29,11 +29,11 @@ export const PROCEDURES: Procedure[] = [
     prompt: "In the provided image, simulate the effects of Botox injections. Smooth out the dynamic wrinkles on the forehead (horizontal lines), between the eyebrows (glabellar or '11' lines), and at the corners of the eyes ('crow's feet'). The skin in these areas should look smoother and more relaxed, while maintaining a natural expression. Crucially, the original skin color, complexion, and texture must be preserved perfectly. Features like freckles and hyperpigmentation must remain completely unchanged. Do not freeze the face or alter other features.",
   },
   {
-    id: "blepharoplasty",
-    name: "Blepharoplasty",
-    description: "Eyelid surgery",
-    icon: "👁️",
-    prompt: "For the eyes in the provided image, remove the excess skin on the upper eyelids and reduce the puffy bags under the eyes to create a smoother, more rested appearance. Add incredibly fine, almost invisible scars hidden within the natural crease of the upper eyelids. Do not change the eye shape or any other part of the face.",
+    id: "hair-transplant",
+    name: "Hair Transplant",
+    description: "Hair restoration",
+    icon: "💇",
+    prompt: "Simulate a hair transplant with maximal, transformative results. The person must have A LOT of hair. Cover the entire scalp, especially the frontal hairline and crown, with an abundance of thick, dense, short hair. There should be absolutely no bald spots anywhere on the head. Completely erase any sign of a receding hairline, replacing it with a strong, low, and perfectly full hairline. The final result must be a super dense, full head of hair that looks completely restored and youthful, styled in a short haircut. Ensure the new hair's color and texture blend flawlessly with any existing hair. Do not change any other part of the image.",
   },
   {
     id: "brow-lift",
