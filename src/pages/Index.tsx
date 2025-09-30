@@ -10,6 +10,7 @@ import { Procedure } from "@/lib/constants";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroSection } from "@/components/ui/hero-section-dark";
 import { HowItWorks } from "@/components/HowItWorks";
+import { Pencil } from "lucide-react";
 type Step = "info" | "upload" | "results";
 const Index = () => {
   const [step, setStep] = useState<Step>("info");
@@ -19,6 +20,7 @@ const Index = () => {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isEditingInfo, setIsEditingInfo] = useState(false);
   const {
     toast
   } = useToast();
@@ -29,6 +31,7 @@ const Index = () => {
     setPatientName(patientInfo.name);
     setSelectedProcedure(patientInfo.procedure);
     setStep("upload");
+    setIsEditingInfo(false);
   };
   const handleFilesChange = (filesWithPreview: any[]) => {
     const files = filesWithPreview.map(f => f.file).filter(f => f instanceof File);
@@ -176,7 +179,7 @@ const Index = () => {
                 <PatientInfoForm onProceed={handlePatientInfoSubmit} />
               </motion.div>}
 
-            {step === "upload" && <motion.div key="upload" initial={{
+            {step === "upload" && !isEditingInfo && <motion.div key="upload" initial={{
               opacity: 0,
               y: 20
             }} animate={{
@@ -189,9 +192,19 @@ const Index = () => {
             }} className="space-y-8">
                 <div className="glass-card rounded-3xl p-6 max-w-2xl mx-auto space-y-4">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Patient</p>
-                      <p className="font-semibold">{patientName}</p>
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Patient</p>
+                        <p className="font-semibold">{patientName}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setIsEditingInfo(true)}
+                        className="h-8 w-8 rounded-full"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Procedure</p>
@@ -218,6 +231,32 @@ const Index = () => {
                         Generate Simulation
                       </Button>
                   </motion.div>}
+              </motion.div>}
+
+            {step === "upload" && isEditingInfo && <motion.div key="edit-info" initial={{
+              opacity: 0,
+              y: 20
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} exit={{
+              opacity: 0
+            }} transition={{
+              duration: 0.5
+            }}>
+                <PatientInfoForm 
+                  onProceed={handlePatientInfoSubmit}
+                  initialName={patientName}
+                  initialProcedure={selectedProcedure}
+                />
+                <div className="flex justify-center mt-4">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setIsEditingInfo(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
               </motion.div>}
 
             {step === "results" && <BeforeAfterSlider beforeImage={beforeImageUrl} afterImage={afterImageUrl} onTryAnother={handleTryAnother} onUploadNew={handleUploadNew} />}

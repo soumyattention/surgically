@@ -11,11 +11,13 @@ interface PatientInfoFormProps {
     name: string;
     procedure: Procedure;
   }) => void;
+  initialName?: string;
+  initialProcedure?: Procedure | null;
 }
 
-export const PatientInfoForm = ({ onProceed }: PatientInfoFormProps) => {
-  const [name, setName] = useState("");
-  const [selectedProcedureId, setSelectedProcedureId] = useState<string>("");
+export const PatientInfoForm = ({ onProceed, initialName = "", initialProcedure = null }: PatientInfoFormProps) => {
+  const [name, setName] = useState(initialName);
+  const [selectedProcedureId, setSelectedProcedureId] = useState<string>(initialProcedure?.id || "");
 
   const handleProceed = () => {
     if (name && selectedProcedureId) {
