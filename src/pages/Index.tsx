@@ -121,13 +121,15 @@ const Index = () => {
       setIsGenerating(false);
     }
   };
-  const handleTryAnother = () => {
-    setSelectedFiles([]);
-    setBeforeImageUrl("");
+  const handleRegenerate = async () => {
+    if (selectedFiles.length === 0 || !selectedProcedure) return;
+    
     setAfterImageUrl("");
-    setStep("upload");
+    setMagicImages(null);
+    await handleGenerate();
   };
-  const handleUploadNew = () => {
+  
+  const handleClearData = () => {
     setSelectedFiles([]);
     setSelectedProcedure(null);
     setPatientName("");
@@ -394,8 +396,8 @@ const Index = () => {
             {step === "results" && <BeforeAfterSlider 
               beforeImage={beforeImageUrl} 
               afterImage={afterImageUrl} 
-              onTryAnother={handleTryAnother} 
-              onUploadNew={handleUploadNew}
+              onRegenerate={handleRegenerate} 
+              onClearData={handleClearData}
               onUseMagic={handleUseMagic}
               isGeneratingMagic={isGeneratingMagic}
               magicImages={magicImages}

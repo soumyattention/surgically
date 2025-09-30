@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 interface BeforeAfterSliderProps {
   beforeImage: string;
   afterImage: string;
-  onTryAnother: () => void;
-  onUploadNew: () => void;
+  onRegenerate: () => void;
+  onClearData: () => void;
   onUseMagic: () => void;
   isGeneratingMagic: boolean;
   magicImages: {closeup: string; sideProfile: string; editorial: string} | null;
@@ -16,8 +16,8 @@ interface BeforeAfterSliderProps {
 export const BeforeAfterSlider = ({
   beforeImage,
   afterImage,
-  onTryAnother,
-  onUploadNew,
+  onRegenerate,
+  onClearData,
   onUseMagic,
   isGeneratingMagic,
   magicImages,
@@ -165,16 +165,16 @@ export const BeforeAfterSlider = ({
           size="lg"
           variant="secondary"
           className="rounded-full px-8"
-          onClick={onTryAnother}
+          onClick={onRegenerate}
         >
-          Try Another Procedure
+          Regenerate
         </Button>
         <Button
           size="lg"
           className="rounded-full px-8"
-          onClick={onUploadNew}
+          onClick={onClearData}
         >
-          Upload New Photo
+          Clear Data
         </Button>
       </div>
     </motion.div>
