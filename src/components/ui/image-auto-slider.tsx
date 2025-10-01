@@ -59,13 +59,10 @@ export const Component = () => {
         }
       `}</style>
       
-      <div className="w-full min-h-screen bg-black relative overflow-hidden flex items-center justify-center">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black z-0" />
-        
+      <div className="w-full py-16 overflow-hidden">
         {/* Scrolling images container */}
-        <div className="relative z-10 w-full flex items-center justify-center py-8">
-          <div className="scroll-container w-full max-w-6xl">
+        <div className="w-full flex items-center justify-center">
+          <div className="scroll-container w-full">
             <div className="infinite-scroll flex gap-6 w-max">
               {duplicatedImages.map((image, index) => (
                 <div
@@ -83,9 +80,6 @@ export const Component = () => {
             </div>
           </div>
         </div>
-        
-        {/* Bottom gradient overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent z-20" />
       </div>
     </>
   );
