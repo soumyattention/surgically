@@ -97,7 +97,7 @@ export const PhotoUpload = ({ onPhotoSelected }: PhotoUploadProps) => {
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Upload Patient Photo</h2>
+            <h2 className="text-4xl tracking-tighter font-geist mx-auto md:text-6xl">Upload Patient Photo</h2>
             <p className="text-muted-foreground">
               Drag and drop or click to select a patient photo
             </p>

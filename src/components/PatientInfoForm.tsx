@@ -38,7 +38,7 @@ export const PatientInfoForm = ({ onProceed, initialName = "", initialProcedure 
     >
       <div className="glass-card rounded-3xl p-8 space-y-6">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-4xl tracking-tighter font-geist mx-auto md:text-6xl mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             Patient Information
           </h2>
           <p className="text-muted-foreground">

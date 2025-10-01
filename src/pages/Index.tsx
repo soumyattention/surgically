@@ -269,7 +269,7 @@ const Index = () => {
         }} transition={{
           duration: 0.5
         }} className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl tracking-tighter font-geist mx-auto md:text-6xl mb-4 bg-gradient-to-r from-purple-400 to-pink-400 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
             Surgically AI
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

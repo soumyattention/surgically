@@ -57,7 +57,7 @@ export const BeforeAfterSlider = ({
       className="w-full max-w-4xl mx-auto"
     >
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-semibold mb-2">Simulation Results</h2>
+        <h2 className="text-4xl tracking-tighter font-geist mx-auto md:text-6xl mb-2">Simulation Results</h2>
         <p className="text-muted-foreground">
           Drag the slider to compare before and after
         </p>
