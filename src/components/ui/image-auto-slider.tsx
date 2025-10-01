@@ -1,14 +1,14 @@
 import React from 'react';
 
 export const Component = () => {
-  // Images for the infinite scroll
+  // Images for the infinite scroll with procedure names
   const images = [
-    "https://ik.imagekit.io/soumya3301/44.png?updatedAt=1759293129386",
-    "https://ik.imagekit.io/soumya3301/47.png?updatedAt=1759293129654",
-    "https://ik.imagekit.io/soumya3301/45.png?updatedAt=1759293129629",
-    "https://ik.imagekit.io/soumya3301/46.png?updatedAt=1759293129536",
-    "https://ik.imagekit.io/soumya3301/48.png?updatedAt=1759293127882",
-    "https://ik.imagekit.io/soumya3301/43.png?updatedAt=1759293129618"
+    { url: "https://ik.imagekit.io/soumya3301/44.png?updatedAt=1759293129386", name: "Hair Transplant" },
+    { url: "https://ik.imagekit.io/soumya3301/47.png?updatedAt=1759293129654", name: "Rhinoplasty" },
+    { url: "https://ik.imagekit.io/soumya3301/45.png?updatedAt=1759293129629", name: "Botox" },
+    { url: "https://ik.imagekit.io/soumya3301/46.png?updatedAt=1759293129536", name: "Chin Surgery" },
+    { url: "https://ik.imagekit.io/soumya3301/48.png?updatedAt=1759293127882", name: "Cleft Lips" },
+    { url: "https://ik.imagekit.io/soumya3301/43.png?updatedAt=1759293129618", name: "Facelift" }
   ];
 
   // Duplicate images for seamless loop
@@ -65,14 +65,22 @@ export const Component = () => {
               {duplicatedImages.map((image, index) => (
                 <div
                   key={index}
-                  className="image-item flex-shrink-0 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-xl overflow-hidden shadow-2xl"
+                  className="image-item flex-shrink-0 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-xl overflow-hidden shadow-2xl relative"
                 >
                   <img
-                    src={image}
-                    alt={`Gallery image ${(index % images.length) + 1}`}
+                    src={image.url}
+                    alt={image.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
+                  {/* Progressive gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                  {/* Procedure name */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+                    <h3 className="text-white font-semibold text-lg md:text-xl lg:text-2xl">
+                      {image.name}
+                    </h3>
+                  </div>
                 </div>
               ))}
             </div>
