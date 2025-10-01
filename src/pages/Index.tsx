@@ -11,6 +11,7 @@ import { Procedure } from "@/lib/constants";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroSection } from "@/components/ui/hero-section-dark";
 import { HowItWorks } from "@/components/HowItWorks";
+import { FlipGallerySection } from "@/components/FlipGallerySection";
 import { Pencil } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 type Step = "info" | "upload" | "results";
@@ -289,6 +290,8 @@ const Index = () => {
     }]} />
       
       <HowItWorks />
+      
+      <FlipGallerySection />
       
       <div id="dashboard" className="bg-background py-12 px-4">
         <div className="container mx-auto">
