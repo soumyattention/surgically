@@ -153,7 +153,7 @@ const Index = () => {
       "cleft-lip-repair": "Create a detailed closeup shot of the upper lip and nose base area, highlighting the repaired lip with natural symmetry and improved function. Ratio 4:3.",
       "chemical-peel": "Create a detailed closeup shot of the facial skin texture, highlighting the improved skin tone, reduced fine lines, and smoother complexion. Ratio 4:3."
     };
-    return closeupPrompts[procedure.id] || "Create a detailed closeup shot of the surgical area with clear results. Ratio 4:3.";
+    return closeupPrompts[procedure.id] || "Create a detailed closeup shot of the surgical area with clear results.";
   };
 
   const handleUseMagic = async () => {
@@ -162,8 +162,8 @@ const Index = () => {
     setIsGeneratingMagic(true);
     try {
       const closeupPrompt = getCloseupPrompt(selectedProcedure);
-      const sideProfilePrompt = "Create a clear side profile view (90-degree angle) of the person's face, highlighting the surgical results with professional lighting. Ratio 4:3.";
-      const bustShotPrompt = "Create a bust shot (head and shoulders) of the person, showing the overall facial transformation with professional studio lighting. Ratio 4:3.";
+      const sideProfilePrompt = "Create a clear side profile view (90-degree angle) of the person's face, highlighting the surgical results with professional lighting.";
+      const bustShotPrompt = "Create a professional upper body editorial shot of the person, showing the overall facial transformation with professional studio lighting.";
 
       console.log("Starting Magic generation with prompts:", {
         closeup: closeupPrompt,
@@ -269,7 +269,7 @@ const Index = () => {
         }} transition={{
           duration: 0.5
         }} className="text-center mb-12">
-          <h1 className="text-4xl tracking-tighter font-geist mx-auto md:text-6xl mb-4 bg-gradient-to-r from-purple-400 to-pink-400 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
             Surgically AI
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
