@@ -12,6 +12,30 @@ export const PhotoUpload = ({ onPhotoSelected }: PhotoUploadProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const { toast } = useToast();
 
+  const validateImageFile = (file: File): boolean => {
+    const allowedTypes = ["image/jpeg", "image/png"];
+    
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a JPG or PNG image only",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image under 10MB",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -22,17 +46,9 @@ export const PhotoUpload = ({ onPhotoSelected }: PhotoUploadProps) => {
         file.type.startsWith("image/")
       );
 
-      if (imageFile) {
-        if (imageFile.size > 10 * 1024 * 1024) {
-          toast({
-            title: "File too large",
-            description: "Please upload an image under 10MB",
-            variant: "destructive",
-          });
-          return;
-        }
+      if (imageFile && validateImageFile(imageFile)) {
         onPhotoSelected(imageFile);
-      } else {
+      } else if (!imageFile) {
         toast({
           title: "Invalid file",
           description: "Please upload a JPG or PNG image",
@@ -54,22 +70,14 @@ export const PhotoUpload = ({ onPhotoSelected }: PhotoUploadProps) => {
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Please upload an image under 10MB",
-          variant: "destructive",
-        });
-        return;
-      }
+    if (file && validateImageFile(file)) {
       onPhotoSelected(file);
     }
   };
 
   const handleCameraCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && validateImageFile(file)) {
       onPhotoSelected(file);
     }
   };

@@ -64,9 +64,15 @@ export default function GalleryUpload({
     const type = file instanceof File ? file.type : file.type;
     return type.startsWith('image/');
   };
+
+  const validateImageFile = (file: File): boolean => {
+    const allowedTypes = ["image/jpeg", "image/png"];
+    return allowedTypes.includes(file.type) && file.size <= maxSize;
+  };
+
   const handleCameraCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && onPhotoSelected) {
+    if (file && validateImageFile(file) && onPhotoSelected) {
       onPhotoSelected(file);
     }
   };

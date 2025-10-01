@@ -1,10 +1,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PROCEDURES, Procedure } from "@/lib/constants";
+import { useToast } from "@/hooks/use-toast";
+
+const patientInfoSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(1, "Patient name is required")
+    .max(100, "Patient name must be less than 100 characters")
+    .regex(/^[a-zA-Z\s'-]+$/, "Patient name can only contain letters, spaces, hyphens, and apostrophes"),
+  procedureId: z.string().min(1, "Please select a procedure")
+});
 
 interface PatientInfoFormProps {
   onProceed: (patientInfo: {
@@ -18,12 +29,26 @@ interface PatientInfoFormProps {
 export const PatientInfoForm = ({ onProceed, initialName = "", initialProcedure = null }: PatientInfoFormProps) => {
   const [name, setName] = useState(initialName);
   const [selectedProcedureId, setSelectedProcedureId] = useState<string>(initialProcedure?.id || "");
+  const { toast } = useToast();
 
   const handleProceed = () => {
-    if (name && selectedProcedureId) {
-      const procedure = PROCEDURES.find(p => p.id === selectedProcedureId);
+    try {
+      const validated = patientInfoSchema.parse({
+        name,
+        procedureId: selectedProcedureId
+      });
+
+      const procedure = PROCEDURES.find(p => p.id === validated.procedureId);
       if (procedure) {
-        onProceed({ name, procedure });
+        onProceed({ name: validated.name, procedure });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Invalid input",
+          description: error.errors[0].message,
+          variant: "destructive"
+        });
       }
     }
   };
