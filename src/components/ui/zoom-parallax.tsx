@@ -34,40 +34,40 @@ export function ZoomParallax({ images }: ZoomParallaxProps) {
 				{images.map(({ src, alt }, index) => {
 					const scale = scales[index % scales.length];
 
-					// Mobile-first positioning - ensuring no overlap with proper spacing
+					// Mobile: all images fit within viewport with equal spacing
 					const positionClasses = [
 						// Image 0 (center top)
-						'[&>div]:!-top-[5vh] [&>div]:!left-0',
+						'[&>div]:!top-[2vh] [&>div]:!left-[5vw]',
 						// Image 1 (top right)
-						'[&>div]:!-top-[8vh] [&>div]:!left-[48vw] md:[&>div]:!-top-[30vh] md:[&>div]:!left-[5vw]',
+						'[&>div]:!top-[2vh] [&>div]:!left-[55vw] md:[&>div]:!-top-[30vh] md:[&>div]:!left-[5vw]',
 						// Image 2 (middle left)
-						'[&>div]:!top-[30vh] [&>div]:!-left-[48vw] md:[&>div]:!-top-[10vh] md:[&>div]:!-left-[25vw]',
-						// Image 3 (middle right)
-						'[&>div]:!top-[30vh] [&>div]:!left-[48vw] md:[&>div]:!top-0 md:[&>div]:!left-[27.5vw]',
+						'[&>div]:!top-[35vh] [&>div]:!left-[5vw] md:[&>div]:!-top-[10vh] md:[&>div]:!-left-[25vw]',
+						// Image 3 (middle center)
+						'[&>div]:!top-[35vh] [&>div]:!left-[55vw] md:[&>div]:!top-0 md:[&>div]:!left-[27.5vw]',
 						// Image 4 (bottom left)
-						'[&>div]:!top-[68vh] [&>div]:!-left-[48vw] md:[&>div]:!top-[27.5vh] md:[&>div]:!left-[5vw]',
+						'[&>div]:!top-[68vh] [&>div]:!left-[5vw] md:[&>div]:!top-[27.5vh] md:[&>div]:!left-[5vw]',
 						// Image 5 (bottom center)
-						'[&>div]:!top-[68vh] [&>div]:!left-0 md:[&>div]:!top-[27.5vh] md:[&>div]:!-left-[22.5vw]',
+						'[&>div]:!top-[68vh] [&>div]:!left-[30vw] md:[&>div]:!top-[27.5vh] md:[&>div]:!-left-[22.5vw]',
 						// Image 6 (bottom right)
-						'[&>div]:!top-[68vh] [&>div]:!left-[48vw] md:[&>div]:!top-[22.5vh] md:[&>div]:!left-[25vw]',
+						'[&>div]:!top-[68vh] [&>div]:!left-[55vw] md:[&>div]:!top-[22.5vh] md:[&>div]:!left-[25vw]',
 					];
 
-					// Consistent sizes with 3:4 aspect ratio
+					// Smaller sizes on mobile to fit all images
 					const sizeClasses = [
 						// Image 0
-						'w-[40vw] md:w-[25vw]',
+						'w-[38vw] md:w-[25vw]',
 						// Image 1
-						'w-[40vw] md:w-[35vw]',
+						'w-[38vw] md:w-[35vw]',
 						// Image 2
-						'w-[40vw] md:w-[20vw]',
+						'w-[38vw] md:w-[20vw]',
 						// Image 3
-						'w-[40vw] md:w-[25vw]',
+						'w-[38vw] md:w-[25vw]',
 						// Image 4
-						'w-[40vw] md:w-[20vw]',
+						'w-[28vw] md:w-[20vw]',
 						// Image 5
-						'w-[40vw] md:w-[30vw]',
+						'w-[28vw] md:w-[30vw]',
 						// Image 6
-						'w-[40vw] md:w-[15vw]',
+						'w-[28vw] md:w-[15vw]',
 					];
 
 					return (
@@ -76,7 +76,7 @@ export function ZoomParallax({ images }: ZoomParallaxProps) {
 							style={{ scale }}
 							className={`absolute top-0 flex h-full w-full items-center justify-center ${positionClasses[index] || ''}`}
 						>
-							<div className={`relative aspect-[3/4] rounded-lg overflow-hidden ${sizeClasses[index] || 'w-[40vw] md:w-[25vw]'}`}>
+							<div className={`relative aspect-[3/4] rounded-lg overflow-hidden ${sizeClasses[index] || 'w-[38vw] md:w-[25vw]'}`}>
 								<img
 									src={src || '/placeholder.svg'}
 									alt={alt || `Parallax image ${index + 1}`}
