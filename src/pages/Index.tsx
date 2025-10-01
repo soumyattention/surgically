@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import GalleryUpload from "@/components/GalleryUpload";
 import { LoadingState } from "@/components/LoadingState";
@@ -11,8 +12,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { HeroSection } from "@/components/ui/hero-section-dark";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Pencil } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 type Step = "info" | "upload" | "results";
 const Index = () => {
+  const navigate = useNavigate();
+  const { user, loading: authLoading, signOut } = useAuth();
   const [step, setStep] = useState<Step>("info");
   const [patientName, setPatientName] = useState<string>("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -27,6 +31,12 @@ const Index = () => {
   const {
     toast
   } = useToast();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
   const handlePatientInfoSubmit = (patientInfo: {
     name: string;
     procedure: Procedure;
@@ -241,7 +251,30 @@ const Index = () => {
       setIsGeneratingMagic(false);
     }
   };
+
+  if (authLoading) {
+    return <LoadingState />;
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return <div className="min-h-screen">
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-4">
+        <span className="text-sm text-muted-foreground">
+          {user.email}
+        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={signOut}
+          className="rounded-full"
+        >
+          Sign Out
+        </Button>
+      </div>
+      
       <HeroSection title="The last thing patients see before saying yes." subtitle={{
       regular: "The future of ",
       gradient: "surgical consultation",
