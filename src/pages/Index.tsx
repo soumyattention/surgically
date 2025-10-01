@@ -33,11 +33,6 @@ const Index = () => {
     toast
   } = useToast();
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate("/auth");
-    }
-  }, [user, authLoading, navigate]);
   const handlePatientInfoSubmit = (patientInfo: {
     name: string;
     procedure: Procedure;
@@ -253,28 +248,23 @@ const Index = () => {
     }
   };
 
-  if (authLoading) {
-    return <LoadingState />;
-  }
-
-  if (!user) {
-    return null;
-  }
-
-  return <div className="min-h-screen">
-      <div className="absolute top-4 right-4 z-50 flex items-center gap-4">
-        <span className="text-sm text-muted-foreground">
-          {user.email}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={signOut}
-          className="rounded-full"
-        >
-          Sign Out
-        </Button>
-      </div>
+  return (
+    <div className="min-h-screen">
+      {user && (
+        <div className="absolute top-4 right-4 z-50 flex items-center gap-4">
+          <span className="text-sm text-muted-foreground">
+            {user.email}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={signOut}
+            className="rounded-full"
+          >
+            Sign Out
+          </Button>
+        </div>
+      )}
       
       <HeroSection title="The last thing patients see before saying yes." subtitle={{
       regular: "The future of ",
@@ -282,7 +272,7 @@ const Index = () => {
       after: " is here."
     }} description="Show patients their surgical results before they leave your office. Made for plastic surgeons, dermatologists, and aesthetic clinics." ctaButtons={[{
       text: "Try Surgically Now",
-      href: "#dashboard",
+      href: user ? "#dashboard" : "#login",
       primary: true
     }, {
       text: "View Showcase",
@@ -293,8 +283,36 @@ const Index = () => {
       
       <ImageSliderSection />
       
-      <div id="dashboard" className="bg-background py-12 px-4">
-        <div className="container mx-auto">
+      {!user && !authLoading && (
+        <div id="login" className="bg-background py-20 px-4">
+          <div className="container mx-auto max-w-md">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="glass-card rounded-3xl p-8"
+            >
+              <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Get Started
+              </h2>
+              <p className="text-center text-muted-foreground mb-8">
+                Sign in to start using Surgically AI
+              </p>
+              <Button
+                size="lg"
+                className="w-full rounded-full"
+                onClick={() => navigate("/auth")}
+              >
+                Sign In / Sign Up
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      )}
+      
+      {user && (
+        <div id="dashboard" className="bg-background py-12 px-4">
+          <div className="container mx-auto">
         {/* Header */}
         <motion.header initial={{
           opacity: 0,
@@ -440,28 +458,30 @@ const Index = () => {
             />}
           </AnimatePresence>
         </div>
-
-        {/* Footer */}
-        <motion.footer initial={{
-          opacity: 0
-        }} animate={{
-          opacity: 1
-        }} transition={{
-          delay: 0.5
-        }} className="text-center mt-16 text-sm text-muted-foreground">
-          <p>
-            Surgically uses advanced AI to provide surgical simulations for
-            educational purposes.
-          </p>
-          <p className="mt-1">
-            Results are approximations and should not replace professional
-            medical consultation.
-          </p>
-        </motion.footer>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Footer */}
+      <motion.footer initial={{
+        opacity: 0
+      }} animate={{
+        opacity: 1
+      }} transition={{
+        delay: 0.5
+      }} className="text-center mt-16 py-8 text-sm text-muted-foreground">
+        <p>
+          Surgically uses advanced AI to provide surgical simulations for
+          educational purposes.
+        </p>
+        <p className="mt-1">
+          Results are approximations and should not replace professional
+          medical consultation.
+        </p>
+      </motion.footer>
 
       <AnimatePresence>{isGenerating && <LoadingState />}</AnimatePresence>
-    </div>;
+    </div>
+  );
 };
 export default Index;
