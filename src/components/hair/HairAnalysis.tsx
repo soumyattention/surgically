@@ -13,12 +13,10 @@ export const HairAnalysis = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<HairAnalysisResult | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const { toast } = useToast();
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const processImageFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast({
         title: "Invalid file",
@@ -33,6 +31,40 @@ export const HairAnalysis = () => {
       setSelectedImage(reader.result as string);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processImageFile(file);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      processImageFile(files[0]);
+    }
   };
 
   const analyzeHair = async () => {
@@ -75,7 +107,17 @@ export const HairAnalysis = () => {
           </div>
 
           {!selectedImage ? (
-            <div className="border-2 border-dashed border-primary/20 rounded-lg p-12 hover:border-primary/40 transition-colors">
+            <div 
+              className={`border-2 border-dashed rounded-lg p-12 transition-colors ${
+                isDragging 
+                  ? "border-primary bg-primary/5" 
+                  : "border-primary/20 hover:border-primary/40"
+              }`}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
               <label className="cursor-pointer block">
                 <input
                   type="file"
