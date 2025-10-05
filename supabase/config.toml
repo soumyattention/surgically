@@ -2,3 +2,9 @@ project_id = "dquizrnzwylpcvvgevza"
 
 [functions.generate-simulation]
 verify_jwt = true
+
+[functions.analyze-hair]
+verify_jwt = true
+
+[functions.generate-hair-timeline]
+verify_jwt = true
