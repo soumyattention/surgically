@@ -351,6 +351,7 @@ export const HairAnalysisNew = () => {
                 beforeImage={generatedImages.month0}
                 generatedImages={generatedImages}
                 totalGrafts={graftEstimate.total}
+                norwoodStage={analysis.norwoodStage}
                 onRegenerate={handleRegenerate}
                 isGenerating={isGenerating}
                 generatingMonth={generatingMonth}
