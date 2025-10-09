@@ -1,181 +1,71 @@
-import { HairDensity } from "./hair-types";
+import { HairDensity, HairCharacteristics, GraftEstimate } from "./hair-types";
 
-export function calculateHairDensity(
-  norwoodStage: string,
-  monthsPostOp: number
-): HairDensity {
-  // Base graft calculations by Norwood stage
-  const graftsNeeded: Record<string, number> = {
-    "1": 0,
-    "2": 1500,
-    "2A": 1800,
-    "3": 2000,
-    "3A": 2300,
-    "3V": 2500,
-    "4": 3000,
-    "4A": 3500,
-    "5": 3500,
-    "5A": 4000,
-    "6": 4500,
-    "7": 5500,
-  };
+// Norwood graft data
+const NORWOOD_GRAFT_DATA = {
+  "I": { avg: 0 },
+  "II": { avg: 1000 },
+  "IIa": { avg: 1200 },
+  "III": { avg: 1900 },
+  "IIIa": { avg: 2100 },
+  "III Vertex": { avg: 2500 },
+  "IV": { avg: 3300 },
+  "IVa": { avg: 3700 },
+  "V": { avg: 4400 },
+  "Va": { avg: 4900 },
+  "VI": { avg: 5500 },
+  "VII": { avg: 6500 }
+} as const;
 
-  const totalGrafts = graftsNeeded[norwoodStage] || 2500;
+const ADJUSTMENT_FACTORS = {
+  hairThickness: { fine: 1.15, medium: 1.0, coarse: 0.90 },
+  contrast: { low: 0.90, medium: 1.0, high: 1.10 },
+  texture: { straight: 1.0, wavy: 0.95, curly: 0.90 }
+};
 
-  // Growth timeline (percentage of final result)
-  const growthCurve: Record<number, number> = {
-    0: 0, // Day of surgery
-    1: 0, // Month 1: shock loss, looks worse
-    2: 5, // Month 2: minimal growth
-    3: 15, // Month 3: early baby hairs
-    4: 25, // Month 4: more visible
-    5: 35, // Month 5: noticeable
-    6: 50, // Month 6: half coverage
-    7: 60, // Month 7
-    8: 70, // Month 8
-    9: 80, // Month 9
-    10: 85, // Month 10
-    11: 90, // Month 11
-    12: 95, // Month 12: final result
-    13: 96,
-    14: 97,
-    15: 98, // Month 15: slight refinement
-    16: 99,
-    17: 99,
-    18: 100, // Month 18: complete
-  };
+const GROWTH_TIMELINE = [
+  { month: 0, percentage: 0, description: "Immediate post-op", hairLength: "1-2mm", phase: "Surgical day" },
+  { month: 3, percentage: 15, description: "Early growth phase", hairLength: "1-2cm", phase: "Early anagen" },
+  { month: 6, percentage: 50, description: "Mid-point growth", hairLength: "4-6cm", phase: "Active growth" },
+  { month: 9, percentage: 80, description: "Advanced growth", hairLength: "7-9cm", phase: "Maturation" },
+  { month: 12, percentage: 95, description: "Final result", hairLength: "10-12cm", phase: "Complete" }
+];
 
-  const densityPercent = growthCurve[monthsPostOp] || 0;
-  const activeGrafts = Math.round((totalGrafts * densityPercent) / 100);
-
+export const calculateHairDensity = (norwoodStage: string, month: number): HairDensity => {
+  const stageKey = norwoodStage as keyof typeof NORWOOD_GRAFT_DATA;
+  const baseGrafts = NORWOOD_GRAFT_DATA[stageKey]?.avg || 2500;
+  const timelineEntry = GROWTH_TIMELINE.find(t => t.month === month) || GROWTH_TIMELINE[4];
+  
   return {
-    month: monthsPostOp,
-    densityPercent,
-    activeGrafts,
-    totalGrafts,
-    stage: getStageDescription(monthsPostOp),
+    month,
+    densityPercent: timelineEntry.percentage,
+    activeGrafts: Math.round(baseGrafts * (timelineEntry.percentage / 100)),
+    totalGrafts: baseGrafts,
+    stage: timelineEntry.description,
+    hairLength: timelineEntry.hairLength,
+    phase: timelineEntry.phase
   };
-}
+};
 
-export function getStageDescription(month: number): string {
-  if (month === 0) return "Immediately post-surgery";
-  if (month === 1) return "Healing phase (shock loss)";
-  if (month <= 3) return "Early growth phase";
-  if (month <= 6) return "Active growth phase";
-  if (month <= 9) return "Maturation phase";
-  if (month <= 12) return "Near-final results";
-  return "Complete transformation";
-}
-
-export function getTimelineMonths(): number[] {
-  return [0, 1, 3, 6, 9, 12, 15, 18];
-}
-
-export function generateHairTransplantPrompt(
-  norwoodStage: string,
-  month: number,
-  totalGrafts: number
-): string {
-  const density = calculateHairDensity(norwoodStage, month);
-
-  const basePrompt = `
-Simulate a hair transplant result for a patient initially at Norwood Stage ${norwoodStage}.
-This image represents ${month} months post-surgery.
-
-CRITICAL REQUIREMENTS:
-`;
-
-  const monthSpecificInstructions: Record<number, string> = {
-    0: `
-- Show fresh transplant: tiny circular grafts visible in grid pattern
-- Redness and swelling on scalp
-- Hair still present but freshly implanted
-- Small scabs at each graft site
-- ${totalGrafts} visible graft points
-- Medical setting appearance
-`,
-    1: `
-- Healing phase: most transplanted hair has fallen out (shock loss)
-- Scalp looks similar to pre-surgery but with healing
-- Some scabbing resolved, slight redness remains
-- Very minimal new hair growth (almost none)
-- DO NOT show significant hair yet - this is normal and expected
-- Patient may look temporarily more bald than before
-`,
-    3: `
-- Early growth: ${density.densityPercent}% hair density
-- Baby hairs emerging: very fine, thin, short (1-2cm)
-- Hairline slightly more defined but still sparse
-- Mix of bald areas and fine new growth
-- Natural, uneven growth pattern (not uniform)
-- Hair looks "fuzzy" and immature
-`,
-    6: `
-- Mid-growth: ${density.densityPercent}% hair density
-- ${density.activeGrafts} grafts actively producing hair
-- Noticeable improvement: thicker, longer hairs (3-5cm)
-- Hairline clearly defined, crown filling in
-- Still visibly less dense than final result
-- Natural variation in hair thickness
-- Can start to style hair
-`,
-    9: `
-- Advanced growth: ${density.densityPercent}% hair density
-- Significant transformation visible
-- Hair longer (5-8cm), much thicker
-- Coverage looks nearly complete from front
-- Some thin spots remaining (normal at this stage)
-- Natural hairline fully formed
-`,
-    12: `
-- Final result: ${density.densityPercent}% hair density
-- Full, dense, natural-looking hairline
-- ${density.activeGrafts} grafts producing mature hair
-- Hair length 8-10cm+, can be styled normally
-- Completely restored, youthful appearance
-- Tiny, well-healed scars at donor area (back of head)
-- Result looks indistinguishable from natural hair
-- Professional, polished appearance
-`,
-    15: `
-- Refinement phase: ${density.densityPercent}% hair density
-- Slight additional thickening and maturation
-- Hair fully integrated with natural hair
-- Maximum density achieved
-- Any remaining thin areas filled in
-`,
-    18: `
-- Complete transformation: ${density.densityPercent}% hair density
-- Absolute final result with maximum density
-- Hair fully mature and thick
-- Perfect natural appearance
-- Long-term stable result
-`,
+export const calculateGrafts = (norwoodStage: string, hairCharacteristics: HairCharacteristics): GraftEstimate => {
+  const stageKey = norwoodStage as keyof typeof NORWOOD_GRAFT_DATA;
+  const baseGrafts = NORWOOD_GRAFT_DATA[stageKey]?.avg || 2500;
+  
+  const thicknessMultiplier = ADJUSTMENT_FACTORS.hairThickness[hairCharacteristics.thickness];
+  const contrastMultiplier = ADJUSTMENT_FACTORS.contrast[hairCharacteristics.contrast];
+  const textureMultiplier = ADJUSTMENT_FACTORS.texture[hairCharacteristics.texture];
+  
+  const totalMultiplier = thicknessMultiplier * contrastMultiplier * textureMultiplier;
+  const adjustedGrafts = Math.round((baseGrafts * totalMultiplier) / 100) * 100;
+  
+  return {
+    total: adjustedGrafts,
+    breakdown: {
+      hairline: Math.round(adjustedGrafts * 0.35),
+      midScalp: Math.round(adjustedGrafts * 0.25),
+      crown: Math.round(adjustedGrafts * 0.25),
+      temples: Math.round(adjustedGrafts * 0.15),
+    }
   };
+};
 
-  const instruction =
-    monthSpecificInstructions[month] || monthSpecificInstructions[12];
-
-  return (
-    basePrompt +
-    instruction +
-    `
-
-MAINTAIN:
-- Original face, skin tone, facial features
-- Natural hair color and texture
-- Realistic skin texture and pores
-- Same lighting and background
-- Only modify hair density and coverage
-
-IMPORTANT:
-- Photorealistic medical simulation
-- Natural, uneven growth (hair doesn't grow uniformly)
-- Clinically accurate for ${month}-month post-op results
-- Show realistic progression, not idealized results
-- Hair should look age-appropriate and natural
-
-OUTPUT: A highly realistic medical simulation image showing the expected appearance at month ${month} post-transplant.
-`
-  );
-}
+export const getTimelineMonths = (): number[] => [0, 3, 6, 9, 12];

@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { HairAnalysis } from "@/components/hair/HairAnalysis";
+import { HairAnalysisNew } from "@/components/hair/HairAnalysisNew";
 
 const Hair = () => {
   const navigate = useNavigate();
@@ -36,7 +35,7 @@ const Hair = () => {
           </div>
         </motion.div>
 
-        <HairAnalysis />
+        <HairAnalysisNew />
       </div>
     </div>
   );
