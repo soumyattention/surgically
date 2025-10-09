@@ -26,11 +26,11 @@ export const LoadingState = () => {
         </motion.div>
 
         <h3 className="text-2xl font-semibold mb-3">
-          Generating AI Simulation
+          Generating Simulation
         </h3>
         <p className="text-muted-foreground mb-6">
-          Creating photorealistic hair growth timeline images.
-          This may take 1-2 minutes...
+          Our AI is creating a realistic visualization of the surgical results.
+          This may take a moment...
         </p>
 
         <div className="flex gap-2 justify-center">

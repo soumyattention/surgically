@@ -38,12 +38,7 @@ serve(async (req) => {
     }
 
     const prompt = generateFinalResultPrompt(norwoodStage, totalGrafts, hairColor, hairTexture);
-    
-    console.log('🎯 Generating Month 12 (Final Result):');
-    console.log(`   📷 Input: Month 0 BEFORE image`);
-    console.log(`   💉 Total Grafts: ${totalGrafts}`);
-    console.log(`   📊 Norwood Stage: ${norwoodStage}`);
-    console.log(`   🎨 Hair: ${hairColor}, ${hairTexture}`);
+    console.log('Generating final result (Month 12)...');
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -58,14 +53,14 @@ serve(async (req) => {
             role: 'user',
             content: [
               {
-                type: 'text',
-                text: prompt
-              },
-              {
                 type: 'image_url',
                 image_url: {
                   url: beforeImage
                 }
+              },
+              {
+                type: 'text',
+                text: prompt
               }
             ]
           }
@@ -94,7 +89,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('✅ Month 12 (Final Result) generated successfully');
+    console.log('Final result generated successfully');
 
     return new Response(
       JSON.stringify({ imageUrl: generatedImage }),

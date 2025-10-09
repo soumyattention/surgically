@@ -45,16 +45,8 @@ serve(async (req) => {
     }
 
     const prompt = generateIntermediatePrompt(month as 3 | 6 | 9, norwoodStage, totalGrafts);
-    
-    // Log image ordering for debugging
-    console.log(`🎨 Generating Month ${month} hair timeline:`);
-    console.log(`   📷 POSITION 1 (BEFORE): Month 0 - Original patient photo`);
-    console.log(`   📷 POSITION 2 (AFTER): Month 12 - Final result`);
-    console.log(`   💉 Total Grafts: ${totalGrafts}`);
-    console.log(`   📊 Norwood Stage: ${norwoodStage}`);
+    console.log(`Generating hair timeline for Month ${month}...`);
 
-    // CRITICAL: Image order must be: POSITION 1 = BEFORE, POSITION 2 = AFTER
-    // The prompt explicitly references these positions
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -68,10 +60,6 @@ serve(async (req) => {
             role: 'user',
             content: [
               {
-                type: 'text',
-                text: prompt
-              },
-              {
                 type: 'image_url',
                 image_url: {
                   url: beforeImage
@@ -82,6 +70,10 @@ serve(async (req) => {
                 image_url: {
                   url: afterImage
                 }
+              },
+              {
+                type: 'text',
+                text: prompt
               }
             ]
           }
@@ -110,7 +102,7 @@ serve(async (req) => {
       );
     }
     
-    console.log(`✅ Month ${month} timeline image generated successfully`);
+    console.log(`Timeline image generated for Month ${month}`);
 
     return new Response(
       JSON.stringify({ imageUrl: generatedImage }),
