@@ -56,11 +56,11 @@ export const PhotoUpload = ({ type, required, preview, onUpload, onRemove }: Pho
             </div>
           </label>
         ) : (
-          <div className="relative">
+          <div className="relative bg-muted rounded-lg overflow-hidden">
             <img
               src={preview}
               alt={`${type} view`}
-              className="w-full h-48 object-cover rounded-lg"
+              className="w-full h-auto object-contain max-h-64"
             />
             <Button
               variant="destructive"

@@ -74,13 +74,13 @@ export const TimelineSlider = ({
       </div>
 
       <div className="space-y-6">
-        <div className="relative aspect-video rounded-lg overflow-hidden bg-secondary">
+        <div className="relative w-full bg-muted rounded-xl overflow-hidden flex items-center justify-center">
           {isGenerating && (
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10">
               <div className="text-center space-y-4 p-8">
                 <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
                 <div>
-                  <p className="font-semibold mb-2">Generating {generatingMonth ? `Month ${generatingMonth}` : 'Images'}...</p>
+                  <p className="font-semibold mb-2">Generating {generatingMonth ? `Month ${generatingMonth}` : "Images"}...</p>
                   <p className="text-sm text-muted-foreground">This may take a moment</p>
                 </div>
               </div>
@@ -89,7 +89,7 @@ export const TimelineSlider = ({
           <img
             src={currentImage}
             alt={`Month ${selectedMonth}`}
-            className="w-full h-full object-cover"
+            className="w-full h-auto object-contain max-h-[600px]"
           />
         </div>
 
