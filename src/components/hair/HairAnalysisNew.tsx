@@ -123,13 +123,16 @@ export const HairAnalysisNew = () => {
       // Set month 0 image
       setGeneratedImages((prev) => ({ ...prev, month0: frontBase64 }));
 
+      // Hide analyzing state before starting generation
+      setIsAnalyzing(false);
+
       toast({
         title: "Analysis Complete",
         description: `Classified as Norwood Stage ${analysisResult.norwoodStage}`,
       });
 
-      // Step 3: Generate timeline images
-      await generateAllImages(frontBase64, analysisResult, grafts.total);
+      // Step 3: Generate timeline images (don't block on this)
+      generateAllImages(frontBase64, analysisResult, grafts.total);
     } catch (error) {
       console.error("Analysis error:", error);
       toast({
@@ -137,7 +140,6 @@ export const HairAnalysisNew = () => {
         description: "Unable to analyze the image. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsAnalyzing(false);
     }
   };
@@ -165,7 +167,10 @@ export const HairAnalysisNew = () => {
         }
       );
 
-      if (month12Error) throw month12Error;
+      if (month12Error) {
+        console.error("Month 12 generation error:", month12Error);
+        throw month12Error;
+      }
 
       setGeneratedImages((prev) => ({ ...prev, month12: month12Data.imageUrl }));
 
@@ -187,7 +192,10 @@ export const HairAnalysisNew = () => {
           }
         );
 
-        if (error) throw error;
+        if (error) {
+          console.error(`Month ${month} generation error:`, error);
+          throw error;
+        }
 
         setGeneratedImages((prev) => ({
           ...prev,
@@ -203,7 +211,7 @@ export const HairAnalysisNew = () => {
       console.error("Generation error:", error);
       toast({
         title: "Generation Failed",
-        description: "Unable to generate timeline images",
+        description: "Unable to generate timeline images. You can view the analysis results below.",
         variant: "destructive",
       });
     } finally {
