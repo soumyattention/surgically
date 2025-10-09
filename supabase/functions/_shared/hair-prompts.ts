@@ -104,12 +104,11 @@ export const generateIntermediatePrompt = (
   norwoodStage: string,
   totalGrafts: number
 ): string => {
-  const activeGrafts = Math.round(
-    totalGrafts * (month === 3 ? 0.20 : month === 6 ? 0.50 : 0.80)
-  );
+  const percentages = { 3: 0.20, 6: 0.50, 9: 0.80 };
+  const activeGrafts = Math.round(totalGrafts * percentages[month]);
   
   if (month === 3) {
-    return `HAIR TRANSPLANT MONTH 3 POST-OPERATIVE SIMULATION
+    return `HAIR TRANSPLANT MONTH 3 POST-OPERATIVE SIMULATION (20% GROWTH)
 
 IMAGE INPUT ORDER:
 You will receive EXACTLY 2 images in this sequence:
@@ -128,14 +127,20 @@ Growth Phase: Early Anagen | Timeline: 12 weeks post-surgery
 
 ═══════════════════════════════════════════════════════════
 
-HAIR SPECIFICATIONS:
-LENGTH: 1.5-2.5cm (short but clearly visible)
-THICKNESS: Fine diameter (baby hair stage)
-DENSITY: 20% of POSITION 2 (sparse but NOTICEABLE)
-COLOR: Slightly lighter than mature color
+CRITICAL DENSITY TARGET: Show EXACTLY 20% of the hair visible in POSITION 2 (AFTER image)
+If POSITION 2 has 100 hairs, show 20 hairs. This is SPARSE but clearly VISIBLE growth.
 
-HAIRLINE: Clearly defined outline visible - hairline shape apparent even if sparse
-COVERAGE: Show new hair growth across ENTIRE treated area - frontal, temples, mid-scalp, crown
+HAIR SPECIFICATIONS:
+LENGTH: 1.5-2.5cm (short stubble - clearly visible but not long)
+THICKNESS: Fine baby hair diameter
+DENSITY: SPARSE coverage - 20% only (1 out of every 5 hairs from final result)
+COLOR: Slightly lighter/less pigmented than mature hair
+
+COVERAGE PATTERN:
+- Hairline: Thin sparse outline visible (can see WHERE it's forming)
+- Temples: Scattered individual hairs, not dense
+- Mid-scalp: Sparse dots of hair growth
+- Crown: Light scattered coverage if applicable
 
 COMPARISON TO POSITION 1 (BEFORE):
 ✓ New hairline outline visible (sparse but defined)
@@ -159,7 +164,7 @@ OUTPUT: Generate photorealistic Month 3 image with 20% density, clear hairline d
   }
   
   if (month === 6) {
-    return `HAIR TRANSPLANT MONTH 6 POST-OPERATIVE SIMULATION
+    return `HAIR TRANSPLANT MONTH 6 POST-OPERATIVE SIMULATION (50% GROWTH - HALFWAY POINT)
 
 IMAGE INPUT ORDER:
 You will receive EXACTLY 2 images in this sequence:
@@ -180,13 +185,20 @@ Density: 50% of final result (HALFWAY POINT)
 
 ═══════════════════════════════════════════════════════════
 
-HAIR SPECIFICATIONS:
-LENGTH: 4-6cm (clearly visible, styleable)
-THICKNESS: Approaching terminal diameter
-DENSITY: 50% of POSITION 2 (MODERATE TO GOOD coverage)
-COLOR: Full mature pigmentation
+CRITICAL DENSITY TARGET: Show EXACTLY 50% of the hair visible in POSITION 2 (AFTER image)
+If POSITION 2 has 100 hairs, show 50 hairs. This is MODERATE/GOOD coverage - the HALFWAY mark.
 
-HAIRLINE: STRONG, well-defined hairline - good density along hairline edge
+HAIR SPECIFICATIONS:
+LENGTH: 4-6cm (medium length - clearly visible and styleable)
+THICKNESS: Medium to thick shafts (approaching mature thickness)
+DENSITY: MODERATE coverage - 50% (half of final result - this is HALFWAY)
+COLOR: Full mature pigmentation (same color as final)
+
+COVERAGE PATTERN:
+- Hairline: CLEAR and DEFINED with moderate density (not thin, not full - exactly halfway)
+- Temples: OBVIOUS filling visible (halfway filled between bald and full)
+- Mid-scalp: MODERATE coverage (can see both hair AND scalp through it)
+- Crown: NOTICEABLE improvement (halfway between bald and full)
 
 COVERAGE ZONES:
 - Frontal: 50% density = GOOD substantial coverage
@@ -194,13 +206,15 @@ COVERAGE ZONES:
 - Mid-Scalp: Moderate to good coverage throughout
 - Crown: Noticeable filling and improvement
 
-VISUAL COMPARISON:
-POSITION 1 → MONTH 6: MAJOR transformation visible
-MONTH 3 → MONTH 6: 2.5x MORE hair than Month 3
+VISUAL MATH - THIS IS CRITICAL:
+POSITION 1 (BEFORE) = 0% hair coverage (bald/thinning areas)
+THIS IMAGE (MONTH 6) = 50% hair coverage (EXACTLY HALFWAY)
+POSITION 2 (AFTER) = 100% hair coverage (full restoration)
 
-HALFWAY CALCULATION:
-If POSITION 2 has 100 hairs in area, show 50 hairs
-If POSITION 2 has full hairline, show moderate-good hairline
+COMPARISON CHECKS:
+- Month 3 had 20% → Month 6 should have 2.5x MORE hair (50% vs 20%)
+- Month 6 vs Month 9: Month 6 should have LESS hair than Month 9 (50% vs 80%)
+- Month 6 should be CLEARLY better than Month 3 but CLEARLY less than Month 9
 
 ═══════════════════════════════════════════════════════════
 
@@ -217,7 +231,7 @@ CRITICAL: Month 6 is the "proof point" - should look GOOD with substantial cover
 OUTPUT: Generate photorealistic Month 6 image with substantial 50% density, strong hairline, moderate-to-good coverage.`;
   }
   
-  return `HAIR TRANSPLANT MONTH 9 POST-OPERATIVE SIMULATION
+  return `HAIR TRANSPLANT MONTH 9 POST-OPERATIVE SIMULATION (80% GROWTH - NEAR COMPLETE)
 
 IMAGE INPUT ORDER:
 You will receive EXACTLY 2 images in this sequence:
@@ -238,15 +252,22 @@ Density: 80% of final result (NEAR-COMPLETE)
 
 ═══════════════════════════════════════════════════════════
 
+CRITICAL DENSITY TARGET: Show EXACTLY 80% of the hair visible in POSITION 2 (AFTER image)
+If POSITION 2 has 100 hairs, show 80 hairs. This is HIGH coverage - almost complete.
+
 HAIR SPECIFICATIONS:
-LENGTH: 7-9cm (fully mature, styleable)
-THICKNESS: Full terminal diameter
-DENSITY: 80% of POSITION 2 (HIGH coverage, near-complete)
-COLOR: Fully mature pigmentation
+LENGTH: 7-9cm (long mature hair - fully styleable)
+THICKNESS: Full terminal thickness (identical to natural hair)
+DENSITY: HIGH coverage - 80% (4 out of every 5 hairs from final result)
+COLOR: Fully mature pigmentation (same as natural hair)
 
-OVERALL IMPRESSION: Looks excellent, near-final - VERY SIMILAR to POSITION 2
+OVERALL IMPRESSION: Looks EXCELLENT and near-final - VERY CLOSE to POSITION 2 but not identical
 
-HAIRLINE: Complete and natural-looking - full density across hairline
+COVERAGE PATTERN:
+- Hairline: STRONG and FULL density (almost complete, tiny gaps acceptable)
+- Temples: SUBSTANTIALLY filled (80% restored)
+- Mid-scalp: EXCELLENT coverage (mostly hair, minimal scalp visible)
+- Crown: 80% restored (very good coverage from all angles)
 
 COVERAGE ZONES:
 - Frontal: 80% density = essentially complete
@@ -254,14 +275,17 @@ COVERAGE ZONES:
 - Mid-Scalp: Excellent coverage throughout
 - Crown: 80% restored, good coverage from all angles
 
-THIS vs POSITION 2 (AFTER):
-Should be 80% similar to POSITION 2
-Differences subtle, only visible on close examination
+VISUAL MATH - THIS IS CRITICAL:
+POSITION 1 (BEFORE) = 0% hair coverage
+Month 3 = 20% hair coverage (sparse early growth)
+Month 6 = 50% hair coverage (moderate halfway point)
+THIS IMAGE (MONTH 9) = 80% hair coverage (NEAR COMPLETE but not finished)
+POSITION 2 (AFTER) = 100% hair coverage (final full restoration)
 
-ACCEPTABLE MINOR DIFFERENCES:
-- Slightly less dense in 1-2 small areas (temple tips, crown center)
-- 80 hairs where POSITION 2 has 100 hairs
-- Very subtle, expert-level differences only
+COMPARISON CHECKS:
+- Month 9 should look MUCH BETTER than Month 6 (80% vs 50% - that's 1.6x more hair)
+- Month 9 should look ALMOST AS GOOD as Month 12 but slightly less dense (80% vs 100%)
+- The difference between Month 9 and Month 12 should be SUBTLE (only 20% difference)
 
 ═══════════════════════════════════════════════════════════
 
