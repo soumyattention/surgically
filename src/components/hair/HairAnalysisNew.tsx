@@ -43,6 +43,7 @@ export const HairAnalysisNew = () => {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingMonth, setGeneratingMonth] = useState<number | null>(null);
+  const [showGenerateButton, setShowGenerateButton] = useState(false);
   const { toast } = useToast();
 
   const handlePhotoUpload = (type: "front" | "top" | "side", file: File) => {
@@ -123,16 +124,13 @@ export const HairAnalysisNew = () => {
       // Set month 0 image
       setGeneratedImages((prev) => ({ ...prev, month0: frontBase64 }));
 
-      // Hide analyzing state before starting generation
-      setIsAnalyzing(false);
+      // Show the generate button
+      setShowGenerateButton(true);
 
       toast({
         title: "Analysis Complete",
-        description: `Classified as Norwood Stage ${analysisResult.norwoodStage}`,
+        description: `Classified as Norwood Stage ${analysisResult.norwoodStage}. Click "Generate Timeline" to create simulation images.`,
       });
-
-      // Step 3: Generate timeline images (don't block on this)
-      generateAllImages(frontBase64, analysisResult, grafts.total);
     } catch (error) {
       console.error("Analysis error:", error);
       toast({
@@ -140,8 +138,14 @@ export const HairAnalysisNew = () => {
         description: "Unable to analyze the image. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleGenerateTimeline = () => {
+    if (!analysis || !graftEstimate || !generatedImages.month0) return;
+    generateAllImages(generatedImages.month0, analysis, graftEstimate.total);
   };
 
   const generateAllImages = async (
@@ -150,6 +154,7 @@ export const HairAnalysisNew = () => {
     totalGrafts: number
   ) => {
     setIsGenerating(true);
+    setShowGenerateButton(false);
     setGeneratingMonth(12);
 
     try {
@@ -281,7 +286,7 @@ export const HairAnalysisNew = () => {
 
   return (
     <div className="space-y-8">
-      {isAnalyzing && <LoadingState />}
+      {(isAnalyzing || isGenerating) && <LoadingState />}
       
       <Card className="p-8">
         <div className="space-y-6">
@@ -354,7 +359,31 @@ export const HairAnalysisNew = () => {
           >
             <AnalysisDisplay analysis={analysis} graftEstimate={graftEstimate} />
 
-            {generatedImages.month12 && (
+            {showGenerateButton && !isGenerating && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <Card className="p-6">
+                  <div className="text-center space-y-4">
+                    <h3 className="text-xl font-semibold">Ready to Generate Timeline</h3>
+                    <p className="text-muted-foreground">
+                      Generate photorealistic simulations showing hair growth progression over 12 months
+                    </p>
+                    <Button
+                      onClick={handleGenerateTimeline}
+                      size="lg"
+                      className="w-full md:w-auto"
+                    >
+                      <Sparkles className="mr-2 h-5 w-5" />
+                      Generate Timeline Images
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+
+            {generatedImages.month12 && !showGenerateButton && (
               <TimelineSlider
                 beforeImage={generatedImages.month0}
                 generatedImages={generatedImages}
