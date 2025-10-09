@@ -138,6 +138,7 @@ export const HairAnalysisNew = () => {
         description: "Unable to analyze the image. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsAnalyzing(false);
     }
   };
